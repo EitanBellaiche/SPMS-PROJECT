@@ -28,9 +28,16 @@ const Login = () => {
       });
 
       const data = await response.json();
+
       if (data.success) {
-        alert(data.message); // הודעת הצלחה
-        navigate('/home'); // ניתוב לעמוד הבית
+        // ניתוב לפי התפקיד
+        if (data.role === 'admin') {
+          navigate('/admin'); // ניתוב לעמוד admin
+        } else if (data.role === 'client') {
+          navigate('/home'); // ניתוב לעמוד הבית
+        } else {
+          setErrorMessage('Role not recognized.');
+        }
       } else {
         setErrorMessage(data.message); // הצגת שגיאה למשתמש
       }
