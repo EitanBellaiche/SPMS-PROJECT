@@ -27,19 +27,19 @@ def login():
     password = data.get('password')
 
     try:
-        # בדיקת שם משתמש וסיסמה והחזרת role
         cursor = db.cursor()
-        query = sql.SQL("SELECT role FROM users WHERE username = %s AND password = %s")
+        query = sql.SQL("SELECT role, username FROM users WHERE username = %s AND password = %s")
         cursor.execute(query, (username, password))
         user = cursor.fetchone()
 
         if user:
-            role = user[0]  # קבלת התפקיד מתוך התוצאה
-            return jsonify({"success": True, "message": "Login successful!", "role": role})
+            role = user[0]
+            username = user[1]
+            return jsonify({"success": True, "message": "Login successful!", "role": role, "username": username})
         else:
             return jsonify({"success": False, "message": "Invalid username or password."})
     except psycopg2.Error as e:
-        db.rollback()  # מבטל את העסקה הכושלת
+        db.rollback()
         print(f"Database query error: {e}")
         return jsonify({"success": False, "message": "An error occurred while processing your request."})
     finally:

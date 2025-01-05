@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminPage.css";
 
 const AdminPage = () => {
@@ -9,6 +9,15 @@ const AdminPage = () => {
     { id: 4, status: "Occupied" },
   ]);
   const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+
+  // Get username from localStorage
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   const toggleStatus = (id) => {
     setParkingSpots((prevSpots) =>
@@ -27,6 +36,8 @@ const AdminPage = () => {
       {/* Header */}
       <header className="admin-header">
         <div className="logo">SPMS</div>
+        <h1>Parking Management</h1>
+        {username && <h2 className="welcome-message">Hello, {username}</h2>} {/* Add Welcome Message */}
       </header>
 
       {/* Success Message */}
@@ -43,7 +54,9 @@ const AdminPage = () => {
                   Parking Spot {spot.id}: <strong>{spot.status}</strong>
                 </span>
                 <button
-                  className="toggle-button"
+                  className={`toggle-button ${
+                    spot.status === "Available" ? "occupied-btn" : "available-btn"
+                  }`}
                   onClick={() => toggleStatus(spot.id)}
                 >
                   {spot.status === "Available" ? (

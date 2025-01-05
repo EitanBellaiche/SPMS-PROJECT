@@ -30,6 +30,9 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
+        // שמירת שם המשתמש ב-LocalStorage
+        localStorage.setItem('username', data.username);
+
         // ניתוב לפי התפקיד
         if (data.role === 'admin') {
           navigate('/admin'); // ניתוב לעמוד admin

@@ -4,10 +4,10 @@ body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
     color: #333;
-  }
-  
-  /* Header */
-  .admin-header {
+}
+
+/* Header */
+.admin-header {
     background-color: #1565c0; /* Blue header */
     color: white;
     padding: 20px;
@@ -17,75 +17,79 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  
-  .logo {
+}
+
+.logo {
     font-size: 1.8rem;
     font-weight: bold;
-  }
-  
-  .navbar ul {
+}
+
+.navbar ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     gap: 15px;
-  }
-  
-  .navbar ul li a {
+}
+
+.navbar ul li a {
     color: white;
     text-decoration: none;
     font-size: 1rem;
     transition: color 0.3s ease;
-  }
-  
-  .navbar ul li a.active {
+}
+
+.navbar ul li a.active {
     font-weight: bold;
     border-bottom: 2px solid white;
-  }
-  
-  .navbar ul li a:hover {
+}
+
+.navbar ul li a:hover {
     color: #90caf9;
-  }
-  
-  /* Success Message */
-  .success-message {
+}
+
+/* Success Message */
+.success-message {
     background-color: #43a047;
     color: white;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     text-align: center;
-  }
-  
-  /* Main Section */
-  .admin-main {
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Section */
+.admin-main {
     text-align: center;
-  }
-  
-  .parking-management {
+    padding: 20px;
+}
+
+.parking-management {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     margin: 0 auto;
-  }
-  
-  .parking-management h2 {
+}
+
+.parking-management h2 {
     margin-bottom: 20px;
     font-size: 1.8rem;
     color: #1565c0;
-  }
-  
-  /* Parking List */
-  .parking-list {
+}
+
+/* Parking List */
+.parking-list {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  .parking-item {
+}
+
+.parking-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -95,54 +99,75 @@ body {
     border-radius: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .parking-item:hover {
+}
+
+.parking-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .parking-item.available {
+}
+
+.parking-item.available {
     border-left: 5px solid #43a047; /* Green for available */
-  }
-  
-  .parking-item.occupied {
+}
+
+.parking-item.occupied {
     border-left: 5px solid #e53935; /* Red for occupied */
-  }
-  
-  /* Parking Info */
-  .parking-info {
+}
+
+/* Parking Info */
+.parking-info {
     font-size: 1.2rem;
-  }
-  
-  /* Toggle Button */
-  .toggle-button {
-    padding: 8px 15px;
+}
+
+/* Toggle Button */
+.toggle-button {
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
     color: white;
     transition: background-color 0.3s ease, transform 0.2s;
-  }
-  
-  .toggle-button:hover {
+    font-weight: bold;
+}
+
+.toggle-button:hover {
     transform: scale(1.05);
-  }
-  
-  .parking-item.available .toggle-button {
+}
+
+.parking-item.available .toggle-button {
     background-color: #e53935; /* Red button for occupied */
-  }
-  
-  .parking-item.available .toggle-button:hover {
+}
+
+.parking-item.available .toggle-button:hover {
     background-color: #d32f2f;
-  }
-  
-  .parking-item.occupied .toggle-button {
+}
+
+.parking-item.occupied .toggle-button {
     background-color: #43a047; /* Green button for available */
+}
+
+.parking-item.occupied .toggle-button:hover {
+    background-color: #388e3c;
+}
+.welcome-message {
+    font-size: 2rem; /* גודל טקסט גדול יותר */
+    color: #b1b1b4; /* צבע טקסט צהוב */
+    font-weight: bold; /* מודגש */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* צל לטקסט */
+    margin-top: 10px;
+    animation: fadeIn 1s ease-in; /* אפקט אנימציה */
   }
   
-  .parking-item.occupied .toggle-button:hover {
-    background-color: #388e3c;
+  /* אנימציית fade-in */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
