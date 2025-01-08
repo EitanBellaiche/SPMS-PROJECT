@@ -1,137 +1,124 @@
 /* General Styles */
 body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e3f2fd, #90caf9);
-    color: #2c3e50;
-  }
-  
-  /* Header */
-  .homepage-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1565c0;
-    padding: 10px 20px;
-    color: white;
-  }
-  
-  .logo {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  .navbar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px;
-  }
-  
-  .navbar ul li a {
-    text-decoration: none;
-    color: white;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-  }
-  
-  .navbar ul li a:hover {
-    color: #90caf9;
-  }
-  
-  /* Main Content */
-  .homepage-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* Intro Section */
-  .intro {
-    margin-bottom: 50px;
-  }
-  
-  .intro h1 {
-    font-size: 3rem;
-    color: #0d47a1;
-    margin-bottom: 20px;
-  }
-  
-  .intro p {
-    font-size: 1.2rem;
-    color: #546e7a;
-    margin-bottom: 30px;
-  }
-  
-  .cta-button {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    color: white;
-    background-color: #42a5f5;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
-  .cta-button a {
-    text-decoration: none;
-    color: white;
-  }
-  
-  .cta-button:hover {
-    background-color: #1e88e5;
-  }
-  
-  /* Info Section */
-  .info-section {
-    background-color: white;
-    padding: 40px 20px;
-    border-radius: 15px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 1200px;
-    margin-top: 30px;
-  }
-  
-  .info-section h2 {
-    font-size: 2rem;
-    color: #1565c0;
-    margin-bottom: 30px;
-  }
-  
-  .info-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .info-card {
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 300px;
-  }
-  
-  .info-card img {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 15px;
-  }
-  
-  .info-card h3 {
-    font-size: 1.5rem;
-    color: #0d47a1;
-    margin-bottom: 10px;
-  }
-  
-  .info-card p {
-    font-size: 1rem;
-    color: #546e7a;
-  }
-  
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background: #f5f5f5;
+  color: #2c3e50;
+}
+
+/* Header */
+.homepage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1565c0;
+  color: white;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+}
+
+/* Greeting Section */
+.greeting-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e3f2fd;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.greeting-text h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #1565c0;
+}
+
+.greeting-text p {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #d1d1d1;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+/* Buttons Section */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.action-button {
+  background-color: #42a5f5;
+  color: white;
+  font-size: 1rem;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  width: 80%;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #1e88e5;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+  background-color: yellow;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Footer */
+.homepage-footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #d1d1d1;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-icon {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  cursor: pointer;
+}
+
+.footer-icon:hover {
+  color: #1565c0;
+}
