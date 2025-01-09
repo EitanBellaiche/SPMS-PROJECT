@@ -45,28 +45,6 @@ def login():
     finally:
         cursor.close()
 
-# API לשליפת שם המשתמש
-@app.route('/user-data', methods=['GET'])
-def get_user_data():
-    username = request.args.get('username')  # מקבל את שם המשתמש
-    try:
-        cursor = db.cursor()
-        query = sql.SQL("SELECT username FROM users WHERE username = %s")
-        cursor.execute(query, (username,))
-        user = cursor.fetchone()
-        if user:
-            return jsonify({
-                "success": True,
-                "username": user[0]
-            })
-        else:
-            return jsonify({"success": False, "message": "User not found"}), 404
-    except Exception as e:
-        print("Error fetching user data:", e)
-        return jsonify({"error": "Unable to fetch user data"}), 500
-    finally:
-        cursor.close()
-
 # API לשליפת החניות
 @app.route('/parking-spots', methods=['GET'])
 def get_parking_spots():

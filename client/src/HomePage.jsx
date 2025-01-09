@@ -1,8 +1,34 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 
-const HomePage = () => {
+const HomePage = ({ loggedInUser }) => {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    // שליפת שם המשתמש מהשרת
+    const fetchUsername = async () => {
+      try {
+        const response = await fetch(`/user-data?username=${loggedInUser}`);
+        const data = await response.json();
+        if (data.success) {
+          setUsername(data.username); // עדכון שם המשתמש מהשרת
+        } else {
+          console.error("Failed to fetch user data:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (loggedInUser) {
+      fetchUsername();
+    }
+  }, [loggedInUser]);
+
+  if (!username) {
+    return <div>Loading...</div>; // מסך טעינה
+  }
+
   return (
     <div className="homepage-container">
       {/* Header */}
@@ -16,12 +42,12 @@ const HomePage = () => {
       {/* Greeting Section */}
       <section className="greeting-section">
         <div className="greeting-text">
-          <h2>Hello Dan,</h2>
-          <p>How can we help you today?</p>
+          <h2>Hello {username},</h2> {/* הצגת שם המשתמש מהדאטה בייס */}
+          <p>Welcome back to the system!</p>
         </div>
         <div className="profile">
           <div className="profile-icon"></div>
-          <p>Dan</p>
+          <p>{username}</p>
         </div>
       </section>
 
