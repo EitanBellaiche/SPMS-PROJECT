@@ -22,20 +22,27 @@ except psycopg2.OperationalError as e:
 
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    API לביצוע התחברות
+    """
     data = request.json
     username = data.get('username')
     password = data.get('password')
 
     try:
         cursor = db.cursor()
-        query = sql.SQL("SELECT role, username FROM users WHERE username = %s AND password = %s")
+        query = sql.SQL("SELECT role, username, profile_picture FROM users WHERE username = %s AND password = %s")
         cursor.execute(query, (username, password))
         user = cursor.fetchone()
 
         if user:
-            role = user[0]
-            username = user[1]
-            return jsonify({"success": True, "message": "Login successful!", "role": role, "username": username})
+            return jsonify({
+                "success": True,
+                "message": "Login successful!",
+                "role": user[0],
+                "username": user[1],
+                "profile_picture": user[2]
+            })
         else:
             return jsonify({"success": False, "message": "Invalid username or password."})
     except psycopg2.Error as e:
@@ -45,9 +52,11 @@ def login():
     finally:
         cursor.close()
 
-# API לשליפת החניות
 @app.route('/parking-spots', methods=['GET'])
 def get_parking_spots():
+    """
+    API לשליפת רשימת החניות
+    """
     try:
         cursor = db.cursor()
         query = "SELECT id, spot_code, level, status FROM parking_spots"
@@ -56,16 +65,24 @@ def get_parking_spots():
         parking_spots = [
             {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3]} for row in rows
         ]
-        return jsonify({"parkingSpots": parking_spots})
+        return jsonify({"success": True, "parkingSpots": parking_spots})
     except Exception as e:
         print("Error fetching parking spots:", e)
-        return jsonify({"error": "Unable to fetch parking spots"}), 500
+        return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
+    finally:
+        cursor.close()
 
-# API לעדכון סטטוס החניה
 @app.route('/parking-spots/<int:spot_id>', methods=['PUT'])
 def update_parking_status(spot_id):
+    """
+    API לעדכון סטטוס של חניה
+    """
     data = request.json
     new_status = data.get("status")
+
+    if new_status not in ["available", "occupied"]:
+        return jsonify({"success": False, "message": "Invalid status"}), 400
+
     try:
         cursor = db.cursor()
         query = "UPDATE parking_spots SET status = %s WHERE id = %s"
@@ -75,7 +92,9 @@ def update_parking_status(spot_id):
     except Exception as e:
         print("Error updating parking spot:", e)
         db.rollback()
-        return jsonify({"error": "Unable to update parking spot"}), 500
+        return jsonify({"success": False, "error": "Unable to update parking spot"}), 500
+    finally:
+        cursor.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

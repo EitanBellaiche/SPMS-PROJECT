@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,10 +19,10 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/login', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
@@ -30,23 +30,24 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
-        // שמירת שם המשתמש ב-LocalStorage
-        localStorage.setItem('username', data.username);
+        // שמירת שם המשתמש ותמונת הפרופיל ב-LocalStorage
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("profilePicture", data.profile_picture);
 
-        // ניתוב לפי התפקיד
-        if (data.role === 'admin') {
-          navigate('/admin'); // ניתוב לעמוד admin
-        } else if (data.role === 'client') {
-          navigate('/home'); // ניתוב לעמוד הבית
+        // ניתוב לפי תפקיד
+        if (data.role === "admin") {
+          navigate("/admin"); // ניתוב לעמוד admin
+        } else if (data.role === "client") {
+          navigate("/home"); // ניתוב לעמוד הבית
         } else {
-          setErrorMessage('Role not recognized.');
+          setErrorMessage("Role not recognized.");
         }
       } else {
         setErrorMessage(data.message); // הצגת שגיאה למשתמש
       }
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('An error occurred. Please try again later.');
+      console.error("Error:", error);
+      setErrorMessage("An error occurred. Please try again later.");
     }
   };
 
@@ -56,8 +57,12 @@ const Login = () => {
         <div className="logo">SPMS</div>
         <nav className="navbar">
           <ul>
-            <li><a href="#contact-footer">Contact</a></li>
-            <li><a href="/search-parking">Reservations</a></li>
+            <li>
+              <a href="#contact-footer">Contact</a>
+            </li>
+            <li>
+              <a href="/search-parking">Reservations</a>
+            </li>
           </ul>
         </nav>
       </header>

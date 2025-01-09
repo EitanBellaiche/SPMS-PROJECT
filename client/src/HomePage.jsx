@@ -1,29 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 
-const HomePage = ({ loggedInUser }) => {
+const HomePage = () => {
   const [username, setUsername] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
 
   useEffect(() => {
-    // שליפת שם המשתמש מהשרת
-    const fetchUsername = async () => {
-      try {
-        const response = await fetch(`/user-data?username=${loggedInUser}`);
-        const data = await response.json();
-        if (data.success) {
-          setUsername(data.username); // עדכון שם המשתמש מהשרת
-        } else {
-          console.error("Failed to fetch user data:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+    // שליפת הנתונים מ-LocalStorage
+    const storedUsername = localStorage.getItem("username");
+    const storedProfilePicture = localStorage.getItem("profilePicture");
 
-    if (loggedInUser) {
-      fetchUsername();
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
-  }, [loggedInUser]);
+
+    if (storedProfilePicture) {
+      setProfilePicture(storedProfilePicture);
+    }
+  }, []);
 
   if (!username) {
     return <div>Loading...</div>; // מסך טעינה
@@ -42,11 +36,19 @@ const HomePage = ({ loggedInUser }) => {
       {/* Greeting Section */}
       <section className="greeting-section">
         <div className="greeting-text">
-          <h2>Hello {username},</h2> {/* הצגת שם המשתמש מהדאטה בייס */}
+          <h2>Hello {username},</h2>
           <p>Welcome back to the system!</p>
         </div>
         <div className="profile">
-          <div className="profile-icon"></div>
+          {profilePicture ? (
+            <img
+              src={`http://localhost:5000${profilePicture}`}
+              alt="Profile"
+              className="profile-icon"
+            />
+          ) : (
+            <div className="profile-icon">No Image</div> // במקרה שאין תמונה
+          )}
           <p>{username}</p>
         </div>
       </section>
