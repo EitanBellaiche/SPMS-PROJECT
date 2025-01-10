@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 
 const HomePage = () => {
   const [username, setUsername] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // שליפת הנתונים מ-LocalStorage
@@ -47,7 +49,7 @@ const HomePage = () => {
               className="profile-icon"
             />
           ) : (
-            <div className="profile-icon">No Image</div> // במקרה שאין תמונה
+            <div className="profile-icon">No Image</div>
           )}
           <p>{username}</p>
         </div>
@@ -55,7 +57,10 @@ const HomePage = () => {
 
       {/* Buttons */}
       <section className="action-buttons">
-        <button className="action-button">
+        <button
+          className="action-button"
+          onClick={() => navigate("/parkingReservation")} // ניווט לדף הזמנת חניה
+        >
           Parking reservation <span className="button-icon"></span>
         </button>
         <button className="action-button">Cancel parking reservation</button>
