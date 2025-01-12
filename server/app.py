@@ -136,6 +136,35 @@ def reserve_spot():
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
     finally:
         cursor.close()
+        
+        
+@app.route('/cancel-reservation', methods=['POST'])
+def cancel_reservation():
+    """
+    API לביטול חנייה שמורה
+    """
+    data = request.json
+    username = data.get("username")
+
+    if not username:
+        return jsonify({"success": False, "message": "Username is required"}), 400
+
+    try:
+        cursor = db.cursor()
+
+        # עדכון עמודת reserved_spot ל-NULL
+        query_update_user = "UPDATE users SET reserved_spot = NULL WHERE username = %s"
+        cursor.execute(query_update_user, (username,))
+
+        db.commit()
+        return jsonify({"success": True, "message": "Reservation cancelled successfully!"})
+    except Exception as e:
+        print("Error cancelling reservation:", e)
+        db.rollback()
+        return jsonify({"success": False, "error": "Unable to cancel reservation"}), 500
+    finally:
+        cursor.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
