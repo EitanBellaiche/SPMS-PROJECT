@@ -164,6 +164,31 @@ def cancel_reservation():
         return jsonify({"success": False, "error": "Unable to cancel reservation"}), 500
     finally:
         cursor.close()
+@app.route('/user-info', methods=['GET'])
+def get_user_info():
+    """
+    API לשליפת מידע על המשתמש, כולל חנייה שמורה
+    """
+    username = request.args.get("username")
+
+    if not username:
+        return jsonify({"success": False, "message": "Username is required"}), 400
+
+    try:
+        cursor = db.cursor()
+        query = "SELECT reserved_spot FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
+        result = cursor.fetchone()
+
+        if result:
+            return jsonify({"success": True, "reserved_spot": result[0]})
+        else:
+            return jsonify({"success": False, "message": "User not found"}), 404
+    except Exception as e:
+        print("Error fetching user info:", e)
+        return jsonify({"success": False, "error": "Unable to fetch user info"}), 500
+    finally:
+        cursor.close()
 
 
 if __name__ == '__main__':

@@ -5,9 +5,11 @@ import "./CancelParking.css";
 const CancelParking = () => {
   const [reservedSpot, setReservedSpot] = useState(null); // חנייה שמורה
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true); // טעינה
+  const [error, setError] = useState(""); // שגיאות
   const navigate = useNavigate();
 
-  // קבלת שם המשתמש מה-localStorage
+  // קבלת שם המשתמש והחנייה השמורה מה-localStorage
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
@@ -22,15 +24,21 @@ const CancelParking = () => {
           if (data.success) {
             setReservedSpot(data.reserved_spot);
           } else {
-            alert("You don't have a reserved parking spot.");
-            navigate("/home"); // מעבר לדף הבית אם אין חנייה שמורה
+            setError("You don't have a reserved parking spot.");
+            setReservedSpot(null);
           }
-        } catch (error) {
-          console.error("Error fetching reserved spot:", error);
+        } catch (err) {
+          console.error("Error fetching reserved spot:", err);
+          setError("Failed to load your reserved parking spot.");
+        } finally {
+          setLoading(false);
         }
       };
 
       fetchReservedSpot();
+    } else {
+      setError("No username found. Please log in.");
+      setLoading(false);
     }
   }, [navigate]);
 
@@ -57,24 +65,51 @@ const CancelParking = () => {
     }
   };
 
+  // טעינה או שגיאה
+  if (loading) {
+    return <div>Loading your reserved parking spot...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="cancel-page-container">
+        <header className="cancel-header">
+          <div className="logo">SPMS</div>
+          <h1>Cancel Parking Reservation</h1>
+        </header>
+        <main className="cancel-main">
+          <p className="error-message">{error}</p>
+          <button className="back-button" onClick={() => navigate("/home")}>
+            Back to Home
+          </button>
+        </main>
+      </div>
+    );
+  }
+
+  // הצגת פרטי החנייה וכפתור ביטול
   return (
     <div className="cancel-page-container">
       <header className="cancel-header">
         <div className="logo">SPMS</div>
         <h1>Cancel Parking Reservation</h1>
       </header>
-
       <main className="cancel-main">
         {reservedSpot ? (
           <div className="reservation-details">
             <h2>Your Reserved Parking Spot</h2>
-            <p>Spot ID: {reservedSpot}</p>
+            <p><strong>Spot ID:</strong> {reservedSpot}</p>
             <button className="cancel-button" onClick={cancelReservation}>
               Cancel Reservation
             </button>
           </div>
         ) : (
-          <p>Loading your reserved parking spot...</p>
+          <div>
+            <p>You don't have a reserved parking spot.</p>
+            <button className="back-button" onClick={() => navigate("/home")}>
+              Back to Home
+            </button>
+          </div>
         )}
       </main>
     </div>

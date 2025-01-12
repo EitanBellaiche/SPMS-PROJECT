@@ -69,7 +69,6 @@ const HomePage = () => {
         >
           Cancel Parking
         </button>
-        <button className="action-button">Parking available</button>
       </section>
 
       {/* Footer */}
