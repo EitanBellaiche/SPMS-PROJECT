@@ -63,7 +63,12 @@ const HomePage = () => {
         >
           Parking reservation <span className="button-icon"></span>
         </button>
-        <button className="action-button">Cancel parking reservation</button>
+        <button
+          className="action-button"
+          onClick={() => navigate("/cancel-parking")}
+        >
+          Cancel Parking
+        </button>
         <button className="action-button">Parking available</button>
       </section>
 
