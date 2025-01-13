@@ -3,59 +3,68 @@ import { useNavigate } from "react-router-dom";
 import "./CancelParking.css";
 
 const CancelParking = () => {
-  const [reservedSpot, setReservedSpot] = useState(null); // חנייה שמורה
+  const [reservations, setReservations] = useState([]); // כל ההזמנות
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true); // טעינה
   const [error, setError] = useState(""); // שגיאות
   const navigate = useNavigate();
 
-  // קבלת שם המשתמש והחנייה השמורה מה-localStorage
+  // שליפת שם המשתמש וההזמנות מהשרת
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
 
-      // שליפת החנייה השמורה מהשרת
-      const fetchReservedSpot = async () => {
+      const fetchReservations = async () => {
         try {
-          const response = await fetch(`http://127.0.0.1:5000/user-info?username=${storedUsername}`);
+          const response = await fetch(
+            `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
+          );
           const data = await response.json();
 
           if (data.success) {
-            setReservedSpot(data.reserved_spot);
+            setReservations(data.reservations);
           } else {
-            setError("You don't have a reserved parking spot.");
-            setReservedSpot(null);
+            setError("Failed to load your reservations.");
           }
         } catch (err) {
-          console.error("Error fetching reserved spot:", err);
-          setError("Failed to load your reserved parking spot.");
+          console.error("Error fetching reservations:", err);
+          setError("Failed to load your reservations.");
         } finally {
           setLoading(false);
         }
       };
 
-      fetchReservedSpot();
+      fetchReservations();
     } else {
       setError("No username found. Please log in.");
       setLoading(false);
     }
   }, [navigate]);
 
-  // ביטול החנייה
-  const cancelReservation = async () => {
+  const cancelReservation = async (spotId, reservationDate) => {
     try {
       const response = await fetch("http://127.0.0.1:5000/cancel-reservation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({
+          username,
+          reservation_date: reservationDate,
+        }),
       });
-
+  
       const result = await response.json();
-
+  
       if (result.success) {
-        alert("Your parking reservation has been cancelled.");
-        navigate("/home"); // מעבר לדף הבית לאחר ביטול
+        alert("Reservation cancelled successfully!");
+        // עדכון הרשימה לאחר הביטול
+        setReservations((prevReservations) =>
+          prevReservations.filter(
+            (reservation) =>
+              reservation.spot_id !== spotId ||
+              reservation.reservation_date !== reservationDate
+          )
+        );
       } else {
         alert(`Failed to cancel the reservation: ${result.message}`);
       }
@@ -64,10 +73,11 @@ const CancelParking = () => {
       alert("Failed to cancel the reservation. Please try again.");
     }
   };
+  
 
   // טעינה או שגיאה
   if (loading) {
-    return <div>Loading your reserved parking spot...</div>;
+    return <div>Loading your reservations...</div>;
   }
 
   if (error) {
@@ -75,7 +85,7 @@ const CancelParking = () => {
       <div className="cancel-page-container">
         <header className="cancel-header">
           <div className="logo">SPMS</div>
-          <h1>Cancel Parking Reservation</h1>
+          <h1>Cancel Parking Reservations</h1>
         </header>
         <main className="cancel-main">
           <p className="error-message">{error}</p>
@@ -87,25 +97,53 @@ const CancelParking = () => {
     );
   }
 
-  // הצגת פרטי החנייה וכפתור ביטול
+  // הצגת ההזמנות
   return (
     <div className="cancel-page-container">
       <header className="cancel-header">
         <div className="logo">SPMS</div>
-        <h1>Cancel Parking Reservation</h1>
+        <h1>Cancel Parking Reservations</h1>
       </header>
       <main className="cancel-main">
-        {reservedSpot ? (
-          <div className="reservation-details">
-            <h2>Your Reserved Parking Spot</h2>
-            <p><strong>Spot ID:</strong> {reservedSpot}</p>
-            <button className="cancel-button" onClick={cancelReservation}>
-              Cancel Reservation
-            </button>
+        {reservations.length > 0 ? (
+          <div className="reservations-list">
+            <h2>Your Reservations</h2>
+            <table className="reservations-table">
+              <thead>
+                <tr>
+                  <th>Spot ID</th>
+                  <th>Reservation Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reservations.map((reservation) => (
+                  <tr key={`${reservation.spot_id}-${reservation.reservation_date}`}>
+                    <td>{reservation.spot_id}</td>
+                    <td>{reservation.reservation_date}</td>
+                    <td>{reservation.status}</td>
+                    <td>
+                      <button
+                        className="cancel-button"
+                        onClick={() =>
+                          cancelReservation(
+                            reservation.spot_id,
+                            reservation.reservation_date
+                          )
+                        }
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div>
-            <p>You don't have a reserved parking spot.</p>
+            <p>You have no reservations.</p>
             <button className="back-button" onClick={() => navigate("/home")}>
               Back to Home
             </button>

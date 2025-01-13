@@ -141,22 +141,30 @@ def reserve_spot():
 @app.route('/cancel-reservation', methods=['POST'])
 def cancel_reservation():
     """
-    API לביטול חנייה שמורה
+    API לביטול חנייה שמורה מטבלת reservations
     """
     data = request.json
     username = data.get("username")
+    reservation_date = data.get("reservation_date")
 
-    if not username:
-        return jsonify({"success": False, "message": "Username is required"}), 400
+    if not username or not reservation_date:
+        return jsonify({"success": False, "message": "Username and Reservation Date are required"}), 400
 
     try:
         cursor = db.cursor()
 
-        # עדכון עמודת reserved_spot ל-NULL
-        query_update_user = "UPDATE users SET reserved_spot = NULL WHERE username = %s"
-        cursor.execute(query_update_user, (username,))
-
+        # מחיקת ההזמנה מטבלת reservations
+        query_delete_reservation = """
+            DELETE FROM reservations 
+            WHERE username = %s AND reservation_date = %s
+        """
+        cursor.execute(query_delete_reservation, (username, reservation_date))
         db.commit()
+
+        # בדיקה אם נמחקה רשומה
+        if cursor.rowcount == 0:
+            return jsonify({"success": False, "message": "No reservation found to cancel"}), 404
+
         return jsonify({"success": True, "message": "Reservation cancelled successfully!"})
     except Exception as e:
         print("Error cancelling reservation:", e)
@@ -164,6 +172,7 @@ def cancel_reservation():
         return jsonify({"success": False, "error": "Unable to cancel reservation"}), 500
     finally:
         cursor.close()
+
 @app.route('/user-info', methods=['GET'])
 def get_user_info():
     """
@@ -249,6 +258,34 @@ def reserve_spot_date():
         print("Error reserving spot:", e)
         db.rollback()
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
+    finally:
+        cursor.close()
+@app.route('/user-reservations', methods=['GET'])
+def get_user_reservations():
+    """
+    API לשליפת כל ההזמנות של המשתמש
+    """
+    username = request.args.get("username")
+
+    if not username:
+        return jsonify({"success": False, "message": "Username is required"}), 400
+
+    try:
+        cursor = db.cursor()
+        query = """
+            SELECT parking_spot_id, reservation_date, status 
+            FROM reservations 
+            WHERE username = %s
+        """
+        cursor.execute(query, (username,))
+        rows = cursor.fetchall()
+        reservations = [
+            {"spot_id": row[0], "reservation_date": row[1], "status": row[2]} for row in rows
+        ]
+        return jsonify({"success": True, "reservations": reservations})
+    except Exception as e:
+        print("Error fetching user reservations:", e)
+        return jsonify({"success": False, "error": "Unable to fetch reservations"}), 500
     finally:
         cursor.close()
 
