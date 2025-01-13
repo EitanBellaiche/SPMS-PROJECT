@@ -5,6 +5,7 @@ import "./ParkingReservation.css";
 const ParkingReservation = () => {
   const [parkingSpots, setParkingSpots] = useState([]);
   const [username, setUsername] = useState("");
+  const [selectedDate, setSelectedDate] = useState(""); // תאריך שנבחר
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,10 +22,7 @@ const ParkingReservation = () => {
         const data = await response.json();
 
         if (data.success) {
-          const availableSpots = data.parkingSpots.filter(
-            (spot) => spot.status === "Available"
-          );
-          setParkingSpots(availableSpots);
+          setParkingSpots(data.parkingSpots);
         } else {
           console.error("Failed to fetch parking spots:", data.error);
         }
@@ -37,59 +35,48 @@ const ParkingReservation = () => {
   }, []);
 
   const reserveSpot = async (id) => {
+    if (!selectedDate) {
+      alert("Please select a date before reserving a parking spot.");
+      return;
+    }
+
     try {
-      const checkReservedResponse = await fetch(
-        "http://127.0.0.1:5000/check-reserved-spot",
+      const checkAvailabilityResponse = await fetch(
+        "http://127.0.0.1:5000/check-availability",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username }),
+          body: JSON.stringify({ spot_id: id, reservation_date: selectedDate }),
         }
       );
 
-      const checkReservedResult = await checkReservedResponse.json();
+      const checkAvailabilityResult = await checkAvailabilityResponse.json();
 
-      if (checkReservedResult.reservedSpot) {
-        alert(
-          "You already have a reserved spot. You cannot reserve two spots."
-        );
-        navigate("/home");
+      if (!checkAvailabilityResult.available) {
+        alert("This spot is already reserved for the selected date.");
         return;
       }
 
-      const updateSpotResponse = await fetch(
-        `http://127.0.0.1:5000/parking-spots/${id}`,
+      const reserveSpotResponse = await fetch(
+        "http://127.0.0.1:5000/reserve-spot-date",
         {
-          method: "PUT",
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: "Occupied" }),
+          body: JSON.stringify({
+            username,
+            spot_id: id,
+            reservation_date: selectedDate,
+          }),
         }
       );
 
-      const updateSpotResult = await updateSpotResponse.json();
+      const reserveSpotResult = await reserveSpotResponse.json();
 
-      if (updateSpotResult.success) {
-        const reserveSpotResponse = await fetch(
-          "http://127.0.0.1:5000/reserve-spot",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, spot_id: id }),
-          }
-        );
-
-        const reserveSpotResult = await reserveSpotResponse.json();
-
-        if (reserveSpotResult.success) {
-          alert("Parking Spot reserved successfully!");
-          navigate("/home");
-        } else {
-          alert(
-            `Failed to update reserved spot: ${reserveSpotResult.message}`
-          );
-        }
+      if (reserveSpotResult.success) {
+        alert("Parking Spot reserved successfully!");
+        navigate("/home");
       } else {
-        alert(`Failed to update parking spot: ${updateSpotResult.message}`);
+        alert(`Failed to reserve parking spot: ${reserveSpotResult.message}`);
       }
     } catch (error) {
       console.error("Error reserving parking spot:", error);
@@ -107,7 +94,18 @@ const ParkingReservation = () => {
 
       <main className="reservation-main">
         <div className="parking-reservation">
-          <h2>Available Parking Spots</h2>
+          <h2>Reserve a Parking Spot</h2>
+
+          <div className="date-picker-container">
+            <label htmlFor="reservation-date">Select Date:</label>
+            <input
+              type="date"
+              id="reservation-date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
+          </div>
+
           <table className="parking-table">
             <thead>
               <tr>

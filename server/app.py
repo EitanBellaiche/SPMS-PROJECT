@@ -189,6 +189,68 @@ def get_user_info():
         return jsonify({"success": False, "error": "Unable to fetch user info"}), 500
     finally:
         cursor.close()
+@app.route('/check-availability', methods=['POST'])
+def check_availability():
+    """
+    API לבדיקה אם מקום חניה פנוי בתאריך מסוים
+    """
+    data = request.json
+    spot_id = data.get("spot_id")
+    reservation_date = data.get("reservation_date")
+
+    if not spot_id or not reservation_date:
+        return jsonify({"success": False, "message": "Spot ID and Reservation Date are required"}), 400
+
+    try:
+        cursor = db.cursor()
+        query = """
+            SELECT 1
+            FROM reservations
+            WHERE parking_spot_id = %s AND reservation_date = %s
+        """
+        cursor.execute(query, (spot_id, reservation_date))
+        result = cursor.fetchone()
+
+        if result:
+            return jsonify({"success": True, "available": False})
+        else:
+            return jsonify({"success": True, "available": True})
+    except Exception as e:
+        print("Error checking availability:", e)
+        return jsonify({"success": False, "error": "Unable to check availability"}), 500
+    finally:
+        cursor.close()
+
+
+@app.route('/reserve-spot-date', methods=['POST'])
+def reserve_spot_date():
+    """
+    API להזמנת מקום חניה בתאריך מסוים
+    """
+    data = request.json
+    username = data.get("username")
+    spot_id = data.get("spot_id")
+    reservation_date = data.get("reservation_date")
+
+    if not username or not spot_id or not reservation_date:
+        return jsonify({"success": False, "message": "Username, Spot ID, and Reservation Date are required"}), 400
+
+    try:
+        cursor = db.cursor()
+        query = """
+            INSERT INTO reservations (parking_spot_id, username, reservation_date, status)
+            VALUES (%s, %s, %s, 'Reserved')
+        """
+        cursor.execute(query, (spot_id, username, reservation_date))
+        db.commit()
+
+        return jsonify({"success": True, "message": f"Spot {spot_id} reserved for {reservation_date}"})
+    except Exception as e:
+        print("Error reserving spot:", e)
+        db.rollback()
+        return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
+    finally:
+        cursor.close()
 
 
 if __name__ == '__main__':
