@@ -39,7 +39,6 @@ const AdminPage = () => {
     fetchParkingSpotsByDate();
   }, [selectedDate]);
 
-  // עדכון סטטוס חניה
   const toggleStatus = async (id) => {
     const updatedSpots = parkingSpots.map((spot) =>
       spot.id === id
@@ -47,21 +46,50 @@ const AdminPage = () => {
         : spot
     );
     setParkingSpots(updatedSpots);
-
+  
     const updatedSpot = updatedSpots.find((spot) => spot.id === id);
-
+  
     try {
-      await fetch(`http://127.0.0.1:5000/parking-spots/${id}`, {
+      if (updatedSpot.status === "Available") {
+        const reservationDate = selectedDate;
+  
+        const deleteResponse = await fetch("http://127.0.0.1:5000/delete-reservation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            spot_id: id,
+            reservation_date: reservationDate,
+          }),
+        });
+  
+        if (!deleteResponse.ok) {
+          console.error("Failed to delete reservation:", await deleteResponse.text());
+          return; // יציאה מוקדמת אם יש בעיה במחיקה
+        }
+      }
+  
+      const response = await fetch(`http://127.0.0.1:5000/parking-spots/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: updatedSpot.status }),
       });
-      setMessage(`Parking Spot ${updatedSpot.spot_code} status updated successfully!`);
-      setTimeout(() => setMessage(""), 3000);
+  
+      if (!response.ok) {
+        console.error("Failed to update parking spot:", await response.text());
+        return; // יציאה מוקדמת אם יש בעיה בעדכון
+      }
+  
+      const data = await response.json();
+      if (data.success) {
+        setMessage(`Parking Spot ${updatedSpot.spot_code} status updated successfully!`);
+      }
     } catch (error) {
-      console.error("Error updating parking spot:", error);
+      console.error("Unexpected error:", error.message);
+      // כאן אפשר להימנע מהצגת הודעת שגיאה למשתמש אם לא תרצה
     }
   };
+  
+  
 
   return (
     <div className="admin-page-container">

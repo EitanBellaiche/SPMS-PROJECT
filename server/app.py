@@ -65,77 +65,6 @@ def get_parking_spots():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
-
-@app.route('/parking-spots/<int:spot_id>', methods=['PUT'])
-def update_parking_status(spot_id):
-    data = request.json
-    new_status = data.get("status")
-
-    if new_status not in ["Available", "Occupied"]:
-        return jsonify({"success": False, "message": "Invalid status"}), 400
-
-    try:
-        cursor = db.cursor()
-        query = "UPDATE parking_spots SET status = %s WHERE id = %s"
-        cursor.execute(query, (new_status, spot_id))
-        db.commit()
-        return jsonify({"success": True, "message": "Parking spot updated successfully!"})
-    except Exception as e:
-        print("Error updating parking spot:", e)
-        db.rollback()
-        return jsonify({"success": False, "error": "Unable to update parking spot"}), 500
-    finally:
-        cursor.close()
-
-@app.route('/check-reserved-spot', methods=['POST'])
-def check_reserved_spot():
-    """
-    API לבדיקה אם למשתמש יש כבר חניה שמורה
-    """
-    data = request.json
-    username = data.get("username")
-
-    if not username:
-        return jsonify({"success": False, "message": "Username is required"}), 400
-
-    try:
-        cursor = db.cursor()
-        query = "SELECT reserved_spot FROM users WHERE username = %s"
-        cursor.execute(query, (username,))
-        result = cursor.fetchone()
-
-        if result and result[0]:
-            return jsonify({"success": True, "reservedSpot": result[0]})
-        else:
-            return jsonify({"success": True, "reservedSpot": None})
-    except Exception as e:
-        print("Error checking reserved spot:", e)
-        return jsonify({"success": False, "error": "Unable to check reserved spot"}), 500
-    finally:
-        cursor.close()
-
-@app.route('/reserve-spot', methods=['POST'])
-def reserve_spot():
-    data = request.json
-    username = data.get("username")
-    spot_id = data.get("spot_id")
-
-    if not username or not spot_id:
-        return jsonify({"success": False, "message": "Username and Spot ID are required"}), 400
-
-    try:
-        cursor = db.cursor()
-        query = "UPDATE users SET reserved_spot = %s WHERE username = %s"
-        cursor.execute(query, (spot_id, username))
-        db.commit()
-
-        return jsonify({"success": True, "message": f"Spot {spot_id} reserved for user {username}"})
-    except Exception as e:
-        print("Error reserving spot:", e)
-        db.rollback()
-        return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
-    finally:
-        cursor.close()
         
         
 @app.route('/cancel-reservation', methods=['POST'])
@@ -173,31 +102,6 @@ def cancel_reservation():
     finally:
         cursor.close()
 
-@app.route('/user-info', methods=['GET'])
-def get_user_info():
-    """
-    API לשליפת מידע על המשתמש, כולל חנייה שמורה
-    """
-    username = request.args.get("username")
-
-    if not username:
-        return jsonify({"success": False, "message": "Username is required"}), 400
-
-    try:
-        cursor = db.cursor()
-        query = "SELECT reserved_spot FROM users WHERE username = %s"
-        cursor.execute(query, (username,))
-        result = cursor.fetchone()
-
-        if result:
-            return jsonify({"success": True, "reserved_spot": result[0]})
-        else:
-            return jsonify({"success": False, "message": "User not found"}), 404
-    except Exception as e:
-        print("Error fetching user info:", e)
-        return jsonify({"success": False, "error": "Unable to fetch user info"}), 500
-    finally:
-        cursor.close()
 @app.route('/check-availability', methods=['POST'])
 def check_availability():
     """
@@ -316,6 +220,41 @@ def get_parking_spots_by_date():
     except Exception as e:
         print("Error fetching parking spots by date:", e)
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
+    finally:
+        cursor.close()
+
+@app.route('/delete-reservation', methods=['POST'])
+def delete_reservation():
+    """
+    API למחיקת חניה מטבלת reservations על בסיס spot_id ו-reservation_date
+    """
+    data = request.json
+    spot_id = data.get("spot_id")
+    reservation_date = data.get("reservation_date")
+
+    if not spot_id or not reservation_date:
+        return jsonify({"success": False, "message": "Spot ID and Reservation Date are required"}), 400
+
+    try:
+        cursor = db.cursor()
+
+        # מחיקת ההזמנה מטבלת reservations
+        query_delete_reservation = """
+            DELETE FROM reservations 
+            WHERE parking_spot_id = %s AND reservation_date = %s
+        """
+        cursor.execute(query_delete_reservation, (spot_id, reservation_date))
+        db.commit()
+
+        # בדיקה אם נמחקה רשומה
+        if cursor.rowcount == 0:
+            return jsonify({"success": False, "message": "No reservation found to delete"}), 404
+
+        return jsonify({"success": True, "message": "Reservation deleted successfully!"})
+    except Exception as e:
+        print("Error deleting reservation:", e)
+        db.rollback()
+        return jsonify({"success": False, "error": "Unable to delete reservation"}), 500
     finally:
         cursor.close()
 
