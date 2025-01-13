@@ -35,54 +35,30 @@ const ParkingReservation = () => {
   }, []);
 
   const reserveSpot = async (id) => {
-    if (!selectedDate) {
-      alert("Please select a date before reserving a parking spot.");
-      return;
-    }
-
     try {
-      const checkAvailabilityResponse = await fetch(
-        "http://127.0.0.1:5000/check-availability",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ spot_id: id, reservation_date: selectedDate }),
-        }
-      );
-
-      const checkAvailabilityResult = await checkAvailabilityResponse.json();
-
-      if (!checkAvailabilityResult.available) {
-        alert("This spot is already reserved for the selected date.");
-        return;
-      }
-
-      const reserveSpotResponse = await fetch(
-        "http://127.0.0.1:5000/reserve-spot-date",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username,
-            spot_id: id,
-            reservation_date: selectedDate,
-          }),
-        }
-      );
-
-      const reserveSpotResult = await reserveSpotResponse.json();
-
-      if (reserveSpotResult.success) {
-        alert("Parking Spot reserved successfully!");
-        navigate("/home");
+      const response = await fetch("http://127.0.0.1:5000/reserve-spot-date", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          spot_id: id,
+          reservation_date: selectedDate,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`Spot ${id} reserved successfully for ${selectedDate}`);
       } else {
-        alert(`Failed to reserve parking spot: ${reserveSpotResult.message}`);
+        alert(data.message || "Failed to reserve the spot");
       }
     } catch (error) {
-      console.error("Error reserving parking spot:", error);
-      alert("Failed to reserve the parking spot. Please try again.");
+      console.error("Error reserving spot:", error);
+      alert("An error occurred while reserving the spot. Please try again.");
     }
   };
+  
 
   return (
     <div className="reservation-page-container">

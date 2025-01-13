@@ -150,11 +150,24 @@ def reserve_spot_date():
 
     try:
         cursor = db.cursor()
-        query = """
+
+        # בדיקה אם החניה כבר מוזמנת בתאריך זה
+        check_query = """
+            SELECT 1 FROM reservations
+            WHERE parking_spot_id = %s AND reservation_date = %s
+        """
+        cursor.execute(check_query, (spot_id, reservation_date))
+        result = cursor.fetchone()
+
+        if result:
+            return jsonify({"success": False, "message": "Parking spot is already reserved for this date"}), 409
+
+        # הוספת ההזמנה אם החניה פנויה
+        insert_query = """
             INSERT INTO reservations (parking_spot_id, username, reservation_date, status)
             VALUES (%s, %s, %s, 'Reserved')
         """
-        cursor.execute(query, (spot_id, username, reservation_date))
+        cursor.execute(insert_query, (spot_id, username, reservation_date))
         db.commit()
 
         return jsonify({"success": True, "message": f"Spot {spot_id} reserved for {reservation_date}"})
@@ -164,6 +177,7 @@ def reserve_spot_date():
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
     finally:
         cursor.close()
+        
 @app.route('/user-reservations', methods=['GET'])
 def get_user_reservations():
     """
