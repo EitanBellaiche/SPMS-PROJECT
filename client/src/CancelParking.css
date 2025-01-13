@@ -2,16 +2,20 @@
     text-align: center;
     padding: 20px;
     font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .cancel-header {
     background-color: #1565c0;
     color: white;
     padding: 20px;
+    font-size: 1.5rem;
 }
 
 .cancel-main {
     margin-top: 20px;
+    padding: 0 10px;
 }
 
 .reservation-details {
@@ -20,17 +24,26 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: inline-block;
+    max-width: 90%;
+    text-align: left;
 }
 
-.cancel-button {
+.cancel-button, .back-button {
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #e53935;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: 20px auto;
+}
+
+.cancel-button {
+    background-color: #e53935;
 }
 
 .cancel-button:hover {
@@ -38,14 +51,7 @@
 }
 
 .back-button {
-    margin-top: 20px;
-    padding: 10px 20px;
     background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
 }
 
 .back-button:hover {
@@ -54,14 +60,56 @@
 
 .error-message {
     color: #e53935;
-    font-size: 18px;
+    font-size: 1.2rem;
     margin-bottom: 20px;
     font-weight: bold;
 }
 
 .loading-message {
-    font-size: 18px;
+    font-size: 1.2rem;
     color: #1565c0;
     font-weight: bold;
     margin-top: 20px;
+}
+
+/* רספונסיביות למסכים קטנים */
+@media (max-width: 768px) {
+    .cancel-header {
+        font-size: 1.2rem;
+        padding: 15px;
+    }
+
+    .reservation-details {
+        padding: 15px;
+    }
+
+    .cancel-button, .back-button {
+        font-size: 0.9rem;
+        max-width: 150px;
+    }
+
+    .error-message, .loading-message {
+        font-size: 1rem;
+    }
+}
+
+/* רספונסיביות למסכים קטנים מאוד */
+@media (max-width: 480px) {
+    .cancel-header {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .reservation-details {
+        padding: 10px;
+    }
+
+    .cancel-button, .back-button {
+        font-size: 0.8rem;
+        max-width: 100px;
+    }
+
+    .error-message, .loading-message {
+        font-size: 0.9rem;
+    }
 }

@@ -5,6 +5,7 @@ const AdminPage = () => {
   const [parkingSpots, setParkingSpots] = useState([]); // נתוני חניות
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
+  const [selectedDate, setSelectedDate] = useState(""); // תאריך שנבחר
 
   // קבלת שם המשתמש מה-localStorage
   useEffect(() => {
@@ -14,20 +15,29 @@ const AdminPage = () => {
     }
   }, []);
 
-  // שליפת חניות מהשרת
+  // שליפת מצב החניות לפי תאריך
   useEffect(() => {
-    const fetchParkingSpots = async () => {
+    if (!selectedDate) return; // אם לא נבחר תאריך, לא לעשות כלום
+
+    const fetchParkingSpotsByDate = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/parking-spots");
+        const response = await fetch(
+          `http://127.0.0.1:5000/parking-spots-by-date?reservation_date=${selectedDate}`
+        );
         const data = await response.json();
-        setParkingSpots(data.parkingSpots);
+
+        if (data.success) {
+          setParkingSpots(data.parkingSpots);
+        } else {
+          console.error("Failed to fetch parking spots:", data.message);
+        }
       } catch (error) {
         console.error("Error fetching parking spots:", error);
       }
     };
 
-    fetchParkingSpots();
-  }, []);
+    fetchParkingSpotsByDate();
+  }, [selectedDate]);
 
   // עדכון סטטוס חניה
   const toggleStatus = async (id) => {
@@ -69,6 +79,20 @@ const AdminPage = () => {
       <main className="admin-main">
         <div className="parking-management">
           <h2>Parking Spots Management</h2>
+
+          {/* לוח שנה לבחירת תאריך */}
+          <div className="date-picker-container">
+            <label htmlFor="date-picker">Select Date:</label>
+            <input
+              type="date"
+              id="date-picker"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="date-picker"
+            />
+          </div>
+
+          {/* טבלת מצב חניות */}
           <table className="parking-table">
             <thead>
               <tr>

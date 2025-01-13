@@ -288,6 +288,36 @@ def get_user_reservations():
         return jsonify({"success": False, "error": "Unable to fetch reservations"}), 500
     finally:
         cursor.close()
+@app.route('/parking-spots-by-date', methods=['GET'])
+def get_parking_spots_by_date():
+    reservation_date = request.args.get("reservation_date")
+
+    if not reservation_date:
+        return jsonify({"success": False, "message": "Reservation date is required"}), 400
+
+    try:
+        cursor = db.cursor()
+        query = """
+            SELECT ps.id, ps.spot_code, ps.level, 
+                   CASE 
+                       WHEN r.id IS NOT NULL THEN 'Occupied' 
+                       ELSE 'Available' 
+                   END AS status
+            FROM parking_spots ps
+            LEFT JOIN reservations r
+            ON ps.id = r.parking_spot_id AND r.reservation_date = %s
+        """
+        cursor.execute(query, (reservation_date,))
+        rows = cursor.fetchall()
+        parking_spots = [
+            {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3]} for row in rows
+        ]
+        return jsonify({"success": True, "parkingSpots": parking_spots})
+    except Exception as e:
+        print("Error fetching parking spots by date:", e)
+        return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
+    finally:
+        cursor.close()
 
 
 if __name__ == '__main__':
