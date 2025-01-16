@@ -220,7 +220,11 @@ def get_parking_spots_by_date():
                    CASE 
                        WHEN r.id IS NOT NULL THEN 'Occupied' 
                        ELSE 'Available' 
-                   END AS status
+                   END AS status,
+                   CASE
+                       WHEN ps.level = 1 THEN TRUE
+                       ELSE FALSE
+                   END AS isRecommended
             FROM parking_spots ps
             LEFT JOIN reservations r
             ON ps.id = r.parking_spot_id AND r.reservation_date = %s
@@ -228,7 +232,7 @@ def get_parking_spots_by_date():
         cursor.execute(query, (reservation_date,))
         rows = cursor.fetchall()
         parking_spots = [
-            {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3]} for row in rows
+            {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3], "isRecommended": row[4]} for row in rows
         ]
         return jsonify({"success": True, "parkingSpots": parking_spots})
     except Exception as e:
@@ -236,6 +240,7 @@ def get_parking_spots_by_date():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
+
 
 @app.route('/delete-reservation', methods=['POST'])
 def delete_reservation():
@@ -269,6 +274,71 @@ def delete_reservation():
         print("Error deleting reservation:", e)
         db.rollback()
         return jsonify({"success": False, "error": "Unable to delete reservation"}), 500
+    finally:
+        cursor.close()
+
+@app.route('/recommend-parking', methods=['GET'])
+def recommend_parking():
+    """
+    API לחיפוש חניה מומלצת לפי מבנה ורמת חניה
+    """
+    username = request.args.get('username')
+    reservation_date = request.args.get('reservation_date')
+
+    if not username or not reservation_date:
+        return jsonify({"success": False, "message": "Username and reservation date are required"}), 400
+
+    try:
+        cursor = db.cursor()
+
+        # שליפת פרטי המשתמש
+        cursor.execute("SELECT building FROM users WHERE username = %s", (username,))
+        user_data = cursor.fetchone()
+        if not user_data:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        user_building = user_data[0]
+
+        # מיפוי בין מבנים לרמות חניה
+        building_to_level = {
+            "A": 1,  # מבנה A -> רמה 1
+            "B": 2   # מבנה B -> רמה 2
+        }
+
+        # רמת החניה המועדפת על פי המבנה
+        preferred_level = building_to_level.get(user_building)
+
+        # שליפת חניות פנויות בתאריך המבוקש
+        query = """
+            SELECT ps.id, ps.spot_code, ps.level
+            FROM parking_spots ps
+            LEFT JOIN reservations r
+            ON ps.id = r.parking_spot_id AND r.reservation_date = %s
+            WHERE ps.status = 'Available' AND r.id IS NULL
+            ORDER BY
+                CASE
+                    WHEN ps.level = %s THEN 0  -- העדפה לרמה תואמת למבנה
+                    ELSE 1
+                END, ps.id ASC
+            LIMIT 1
+        """
+        cursor.execute(query, (reservation_date, preferred_level))
+        recommended_spot = cursor.fetchone()
+
+        if recommended_spot:
+            return jsonify({
+                "success": True,
+                "recommendedSpot": {
+                    "id": recommended_spot[0],
+                    "spot_code": recommended_spot[1],
+                    "level": recommended_spot[2]
+                }
+            })
+        else:
+            return jsonify({"success": False, "message": "No available parking spots"}), 404
+    except Exception as e:
+        print(f"Error recommending parking spot: {e}")
+        return jsonify({"success": False, "error": "Unable to recommend parking spot"}), 500
     finally:
         cursor.close()
 
