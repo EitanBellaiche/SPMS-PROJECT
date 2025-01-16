@@ -10,7 +10,7 @@ const ParkingSpotRow = ({ spot, onReserve }) => {
       <td>
         {spot.id}
         {spot.isRecommended && (
-          <span className="recommended-badge">Recommended</span>
+          <span className="recommended-badge">R</span>
         )}
       </td>
       <td>{spot.spot_code}</td>
@@ -30,21 +30,24 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
   }
 
   return (
+    <div className="parking-table-container">
     <table className="parking-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Spot Code</th>
-          <th>Level</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {parkingSpots.map((spot) => (
-          <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
-        ))}
-      </tbody>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Spot Code</th>
+                <th>Level</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {parkingSpots.map((spot) => (
+                <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
+            ))}
+        </tbody>
     </table>
+</div>
+
   );
 };
 
