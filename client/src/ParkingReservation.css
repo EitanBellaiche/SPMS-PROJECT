@@ -8,15 +8,14 @@ body {
 
 /* Header */
 .reservation-header {
-    background-color: #1565c0; /* Blue header */
-    color: white;
-    padding: 20px;
-    text-align: center;
-    width: 100%; /* Full width */
-    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #1565c0;
+    color: white;
+    padding: 10px 20px;
+    height: 30px;
+      
 }
 
 .logo {
@@ -24,29 +23,26 @@ body {
     font-weight: bold;
 }
 
+/* Navbar */
 .navbar ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 15px;
+    gap: 20px;
 }
 
 .navbar ul li a {
-    color: white;
     text-decoration: none;
+    color: white;
     font-size: 1rem;
     transition: color 0.3s ease;
-}
-
-.navbar ul li a.active {
-    font-weight: bold;
-    border-bottom: 2px solid white;
 }
 
 .navbar ul li a:hover {
     color: #90caf9;
 }
+
 
 /* Success Message */
 .success-message {
@@ -136,12 +132,62 @@ body {
 /* Welcome Message */
 .welcome-message {
     font-size: 2rem;
-    color: #ffeb3b; /* Yellow */
+    color: white; /* Yellow */
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     margin-top: 10px;
     animation: fadeIn 1s ease-in;
 }
+.button-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* עיצוב לעיגול עם האות L */
+.profile-icon-letter {
+    width: 50px;
+    height: 50px;
+    background-color: #f9f9f9; /* צבע רקע כחול */
+    color: white; /* צבע טקסט לבן */
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50%; /* הפיכת הצורה לעיגול */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase; /* אות גדולה */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל עדין */
+  }
+  
+  
+/* מבנה כללי של הדף */
+.reservation-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* גובה מלא של הדף */
+}
+
+/* התוכן המרכזי יתפוס את כל המקום הפנוי */
+.reservation-main {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+}
+
+/* הפוטר נשאר בתחתית */
+.footer {
+    background-color: #1565c0;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+  
 
 @keyframes fadeIn {
     from {

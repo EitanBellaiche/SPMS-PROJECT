@@ -3,15 +3,13 @@ import { useNavigate } from "react-router-dom";
 import "./ParkingReservation.css";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = spot.isRecommended ? "recommended-spot" : ""; // עיצוב לחניה מומלצת
+  const rowClass = spot.isRecommended ? "recommended-spot" : "";
 
   return (
     <tr key={spot.id} className={rowClass}>
       <td>
         {spot.id}
-        {spot.isRecommended && (
-          <span className="recommended-badge">R</span>
-        )}
+        {spot.isRecommended && <span className="recommended-badge">R</span>}
       </td>
       <td>{spot.spot_code}</td>
       <td>Level {spot.level}</td>
@@ -31,23 +29,22 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
 
   return (
     <div className="parking-table-container">
-    <table className="parking-table">
+      <table className="parking-table">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Spot Code</th>
-                <th>Level</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Spot Code</th>
+            <th>Level</th>
+            <th>Action</th>
+          </tr>
         </thead>
         <tbody>
-            {parkingSpots.map((spot) => (
-                <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
-            ))}
+          {parkingSpots.map((spot) => (
+            <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
+          ))}
         </tbody>
-    </table>
-</div>
-
+      </table>
+    </div>
   );
 };
 
@@ -58,7 +55,6 @@ const ParkingReservation = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // שליפת שם המשתמש מה-LS
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
@@ -66,7 +62,6 @@ const ParkingReservation = () => {
     }
   }, []);
 
-  // שליפת חניות פנויות לפי תאריך
   useEffect(() => {
     const fetchAvailableSpots = async () => {
       if (!selectedDate) return;
@@ -93,7 +88,6 @@ const ParkingReservation = () => {
     fetchAvailableSpots();
   }, [selectedDate]);
 
-  // פונקציה להזמנת חניה
   const reserveSpot = async (id) => {
     if (!selectedDate) {
       alert("Please select a date before reserving.");
@@ -104,20 +98,14 @@ const ParkingReservation = () => {
       const response = await fetch("http://127.0.0.1:5000/reserve-spot-date", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          spot_id: id,
-          reservation_date: selectedDate,
-        }),
+        body: JSON.stringify({ username, spot_id: id, reservation_date: selectedDate })
       });
 
       const data = await response.json();
 
       if (response.ok) {
         alert(`Spot ${id} reserved successfully for ${selectedDate}`);
-        setParkingSpots((prevSpots) =>
-          prevSpots.filter((spot) => spot.id !== id)
-        ); // הסרת החניה מהטבלה
+        setParkingSpots((prevSpots) => prevSpots.filter((spot) => spot.id !== id));
       } else {
         alert(data.message || "Failed to reserve the spot");
       }
@@ -131,31 +119,26 @@ const ParkingReservation = () => {
     <div className="reservation-page-container">
       <header className="reservation-header">
         <div className="logo">SPMS</div>
-        <h1>Parking Reservation</h1>
-        {username && <h2 className="welcome-message">Hello, {username}</h2>}
+        <div className="profile">
+           <div className="profile-icon-letter">L</div>
+       </div>
       </header>
+
 
       <main className="reservation-main">
         <div className="parking-reservation">
           <h2>Reserve a Parking Spot</h2>
-
           <div className="date-picker-container">
             <label htmlFor="reservation-date">Select Date:</label>
-            <input
-              type="date"
-              id="reservation-date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
+            <input type="date" id="reservation-date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
           </div>
-
-          {loading ? (
-            <p className="loading-message">Loading parking spots...</p>
-          ) : (
-            <ParkingTable parkingSpots={parkingSpots} onReserve={reserveSpot} />
-          )}
+          {loading ? null : <ParkingTable parkingSpots={parkingSpots} onReserve={reserveSpot} />}
         </div>
       </main>
+
+      <footer className="footer">
+        © 2024 Smart Parking Management System. All rights reserved.
+      </footer>
     </div>
   );
 };

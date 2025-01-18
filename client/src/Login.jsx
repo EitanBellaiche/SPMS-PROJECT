@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import "./Login.css";
 
 const Login = () => {
@@ -61,7 +63,7 @@ const Login = () => {
               <a href="#contact-footer">Contact</a>
             </li>
             <li>
-              <a href="/search-parking">Reservations</a>
+              <Link to = "/signup">Sign Up</Link>
             </li>
           </ul>
         </nav>
