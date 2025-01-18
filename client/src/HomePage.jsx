@@ -35,47 +35,48 @@ const HomePage = () => {
         </nav>
       </header>
 
-      {/* Greeting Section */}
-      <section className="greeting-section">
-        <div className="greeting-text">
-          <h2>Hello {username},</h2>
-          <p>Welcome back to the system!</p>
-        </div>
-        <div className="profile">
-          {profilePicture ? (
-            <img
-              src={`http://localhost:5000${profilePicture}`}
-              alt="Profile"
-              className="profile-icon"
-            />
-          ) : (
-            <div className="profile-icon">No Image</div>
-          )}
-          <p>{username}</p>
-        </div>
-      </section>
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Greeting Section */}
+        <section className="greeting-section">
+          <div className="greeting-text">
+            <h2>Hello {username},</h2>
+            <p>Welcome back to the system!</p>
+          </div>
+          <div className="profile">
+            {profilePicture ? (
+              <img
+                src={`http://localhost:5000${profilePicture}`}
+                alt="Profile"
+                className="profile-icon"
+              />
+            ) : (
+              <div className="profile-icon">No Image</div>
+            )}
+            <p>{username}</p>
+          </div>
+        </section>
 
-      {/* Buttons */}
-      <section className="action-buttons">
-        <button
-          className="action-button"
-          onClick={() => navigate("/parkingReservation")} // ניווט לדף הזמנת חניה
-        >
-          Parking reservation <span className="button-icon"></span>
-        </button>
-        <button
-          className="action-button"
-          onClick={() => navigate("/cancel-parking")}
-        >
-          Cancel Parking
-        </button>
-      </section>
+        {/* Buttons */}
+        <section className="action-buttons">
+          <button
+            className="action-button"
+            onClick={() => navigate("/parkingReservation")}
+          >
+            Parking reservation <span className="button-icon"></span>
+          </button>
+          <button
+            className="action-button"
+            onClick={() => navigate("/cancel-parking")}
+          >
+            Cancel Parking
+          </button>
+        </section>
+      </div>
 
       {/* Footer */}
-      <footer className="homepage-footer">
-        <div className="footer-icon">🔄</div>
-        <div className="footer-icon">⚙️</div>
-        <div className="footer-icon">🔔</div>
+      <footer className="footer">
+        © 2024 Smart Parking Management System. All rights reserved.
       </footer>
     </div>
   );
