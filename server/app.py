@@ -206,7 +206,7 @@ def reserve_spot_date():
         cursor.execute(insert_query, (spot_id, username, reservation_date, start_time, end_time))
         db.commit()
 
-        return jsonify({"success": True, "message": f"Spot {spot_id} reserved successfully for {reservation_date} from {start_time} to {end_time}"})
+        return jsonify({"success": True, "message": f"Spot reserved successfully for {reservation_date} from {start_time} to {end_time}"})
     except Exception as e:
         print("Error reserving spot:", e)
         db.rollback()

@@ -186,39 +186,51 @@ body {
     text-align: center;
     padding: 10px 0;
 }
-
   
-
-@keyframes fadeIn {
+  @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: translateY(-10px);
+      opacity: 0;
+      transform: translateY(-10px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
-
-/* עיצוב שורה של חניה מומלצת */
-.recommended-spot {
-    background-color: #f0f8ff; /* רקע כחול בהיר */
-    border-left: 5px solid #1e90ff; /* מסגרת כחולה */
-    position: relative;
   }
   
-  /* עיצוב לתווית Recommended */
-  .recommended-badge {
-    background-color: #1e90ff; /* רקע כחול */
-    color: white; /* טקסט לבן */
-    padding: 5px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 12px; /* פינות מעוגלות */
-    position: absolute;
-    top: 50%;
-    right: -25px; /* ממוקם מימין */
-    transform: translateY(-50%);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל */
+  .recommendation-container {
+    margin-bottom: 5px;
+    margin-top: 10px; /* מרווח מתחת להודעה */
+  }
+  
+  .recommendation-message {
+    background-color: #e3f2fd; /* רקע כחול בהיר */
+    border: 2px solid #1565c0; /* מסגרת כחולה כהה */
+    border-radius: 5px; /* פינות מעוגלות */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* צל עדין */
+  }
+  
+  .recommendation-text {
+    color: #1565c0; /* טקסט כחול כהה */
+    font-weight: bold; /* טקסט מודגש */
+    text-align: center; /* מיושר למרכז */
+    font-size: 1.2rem; /* גודל טקסט */
+  }
+  
+  .recommended-spot {
+    color: rgb(49, 49, 217); /* רקע צהוב */
+    font-weight: bold; /* טקסט מודגש */
+  }
+  
+  .available-spot {
+    background-color: #e0f7fa; /* רקע תכלת */
+  }
+  
+  .occupied-spot {
+    background-color: #ffcccb; /* רקע אדום */
+  }
+  
+  .spot-row {
+    transition: background-color 0.3s ease; /* מעבר חלק בין צבעים */
   }
   

@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./ParkingReservation.css";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = spot.status === "Occupied" ? "occupied-spot" : "available-spot";
+  const rowClass = `spot-row ${
+    spot.status === "Occupied"
+      ? "occupied-spot"
+      : spot.recommended
+      ? "recommended-spot"
+      : "available-spot"
+  }`;
 
   return (
     <tr key={spot.id} className={rowClass}>
@@ -79,6 +85,8 @@ const ParkingReservation = () => {
 
     try {
       setLoading(true);
+
+      // Fetch available spots
       const response = await fetch(
         `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}`
       );
@@ -86,6 +94,24 @@ const ParkingReservation = () => {
 
       if (data.success) {
         setParkingSpots(data.parkingSpots);
+
+        // Fetch recommended spot
+        const recommendResponse = await fetch(
+          `http://127.0.0.1:5000/recommend-parking?username=${username}&reservation_date=${selectedDate}`
+        );
+        const recommendData = await recommendResponse.json();
+
+        if (recommendData.success) {
+          const recommendedSpot = recommendData.recommendedSpot;
+
+          // Highlight recommended spot in the list
+          const updatedSpots = data.parkingSpots.map((spot) =>
+            spot.id === recommendedSpot.id
+              ? { ...spot, recommended: true }
+              : spot
+          );
+          setParkingSpots(updatedSpots);
+        }
       } else {
         alert(data.message || "Error fetching parking spots.");
       }
@@ -181,6 +207,17 @@ const ParkingReservation = () => {
           <button onClick={fetchAvailableSpots} className="search-button">
             Search
           </button>
+
+          {parkingSpots.some((spot) => spot.recommended) && (
+            <div className="recommendation-container">
+              <div className="recommendation-message">
+                <p className="recommendation-text">
+                  Recommended spot is highlighted blue.
+                </p>
+              </div>
+            </div>
+          )}
+
           {loading ? (
             <p>Loading...</p>
           ) : (
