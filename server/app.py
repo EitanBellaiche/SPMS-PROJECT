@@ -154,20 +154,34 @@ def check_availability():
         cursor.close()
 
 
+def is_valid_time_format(time):
+    try:
+        hours, minutes = map(int, time.split(":"))
+        return 0 <= hours < 24 and minutes in {0, 30}
+    except ValueError:
+        return False
+
 @app.route('/reserve-spot-date', methods=['POST'])
 def reserve_spot_date():
     """
     API להזמנת מקום חניה בתאריך מסוים עם שעות התחלה וסיום
     """
     data = request.json
+
+    # קבלת נתונים מהבקשה
     username = data.get("username")
     spot_id = data.get("spot_id")
     reservation_date = data.get("reservation_date")
     start_time = data.get("start_time")
     end_time = data.get("end_time")
 
+    # בדיקה שהשדות הנדרשים קיימים
     if not username or not spot_id or not reservation_date or not start_time or not end_time:
-        return jsonify({"success": False, "message": "Username, Spot ID, Reservation Date, Start Time, and End Time are required"}), 400
+        return jsonify({"success": False, "message": "All fields are required"}), 400
+
+    # בדיקה שפורמט השעה חוקי
+    if not is_valid_time_format(start_time) or not is_valid_time_format(end_time):
+        return jsonify({"success": False, "message": "Time must be in 30-minute intervals"}), 400
 
     try:
         cursor = db.cursor()
@@ -199,6 +213,7 @@ def reserve_spot_date():
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
     finally:
         cursor.close()
+
 
 @app.route('/user-reservations', methods=['GET'])
 def get_user_reservations():

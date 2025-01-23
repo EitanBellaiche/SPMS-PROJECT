@@ -59,6 +59,18 @@ const ParkingReservation = () => {
     setUsername(storedUsername);
   }, []);
 
+  const generateTimeOptions = () => {
+    const options = [];
+    for (let hour = 0; hour < 24; hour++) {
+      const hourStr = hour.toString().padStart(2, "0");
+      options.push(`${hourStr}:00`);
+      options.push(`${hourStr}:30`);
+    }
+    return options;
+  };
+
+  const timeOptions = generateTimeOptions();
+
   const fetchAvailableSpots = async () => {
     if (!selectedDate || !startTime || !endTime) {
       alert("Please select a date, start time, and end time.");
@@ -139,19 +151,31 @@ const ParkingReservation = () => {
             </label>
             <label>
               Start Time:
-              <input
-                type="time"
+              <select
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-              />
+              >
+                <option value="">Select Start Time</option>
+                {timeOptions.map((time) => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
             </label>
             <label>
               End Time:
-              <input
-                type="time"
+              <select
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-              />
+              >
+                <option value="">Select End Time</option>
+                {timeOptions.map((time) => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
           <button onClick={fetchAvailableSpots} className="search-button">
