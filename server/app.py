@@ -51,10 +51,29 @@ def login():
 
 @app.route('/parking-spots', methods=['GET'])
 def get_parking_spots():
+    reservation_date = request.args.get("reservation_date")
+    start_time = request.args.get("start_time")
+    end_time = request.args.get("end_time")
+
+    if not reservation_date or not start_time or not end_time:
+        return jsonify({"success": False, "message": "Date and time range are required"}), 400
+
     try:
         cursor = db.cursor()
-        query = "SELECT id, spot_code, level, status FROM parking_spots"
-        cursor.execute(query)
+        query = """
+            SELECT ps.id, ps.spot_code, ps.level,
+                   CASE 
+                       WHEN EXISTS (
+                           SELECT 1 FROM reservations r
+                           WHERE r.parking_spot_id = ps.id
+                           AND r.reservation_date = %s
+                           AND (r.start_time < %s AND r.end_time > %s)
+                       ) THEN 'Occupied' 
+                       ELSE 'Available' 
+                   END AS status
+            FROM parking_spots ps
+        """
+        cursor.execute(query, (reservation_date, end_time, start_time))
         rows = cursor.fetchall()
         parking_spots = [
             {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3]} for row in rows
@@ -65,32 +84,27 @@ def get_parking_spots():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
-        
+
         
 @app.route('/cancel-reservation', methods=['POST'])
 def cancel_reservation():
-    """
-    API לביטול חנייה שמורה מטבלת reservations
-    """
     data = request.json
     username = data.get("username")
     reservation_date = data.get("reservation_date")
+   
 
     if not username or not reservation_date:
-        return jsonify({"success": False, "message": "Username and Reservation Date are required"}), 400
+        return jsonify({"success": False, "message": "All fields are required"}), 400
 
     try:
         cursor = db.cursor()
-
-        # מחיקת ההזמנה מטבלת reservations
         query_delete_reservation = """
             DELETE FROM reservations 
-            WHERE username = %s AND reservation_date = %s
+            WHERE username = %s AND reservation_date = %s 
         """
         cursor.execute(query_delete_reservation, (username, reservation_date))
         db.commit()
 
-        # בדיקה אם נמחקה רשומה
         if cursor.rowcount == 0:
             return jsonify({"success": False, "message": "No reservation found to cancel"}), 404
 
@@ -102,26 +116,31 @@ def cancel_reservation():
     finally:
         cursor.close()
 
+
 @app.route('/check-availability', methods=['POST'])
 def check_availability():
     """
-    API לבדיקה אם מקום חניה פנוי בתאריך מסוים
+    API לבדיקה אם מקום חניה פנוי בתאריך ושעות מסוימים
     """
     data = request.json
     spot_id = data.get("spot_id")
     reservation_date = data.get("reservation_date")
+    start_time = data.get("start_time")
+    end_time = data.get("end_time")
 
-    if not spot_id or not reservation_date:
-        return jsonify({"success": False, "message": "Spot ID and Reservation Date are required"}), 400
+    if not spot_id or not reservation_date or not start_time or not end_time:
+        return jsonify({"success": False, "message": "All fields are required"}), 400
 
     try:
         cursor = db.cursor()
         query = """
             SELECT 1
             FROM reservations
-            WHERE parking_spot_id = %s AND reservation_date = %s
+            WHERE parking_spot_id = %s 
+            AND reservation_date = %s
+            AND (start_time < %s AND end_time > %s)
         """
-        cursor.execute(query, (spot_id, reservation_date))
+        cursor.execute(query, (spot_id, reservation_date, end_time, start_time))
         result = cursor.fetchone()
 
         if result:
@@ -138,46 +157,49 @@ def check_availability():
 @app.route('/reserve-spot-date', methods=['POST'])
 def reserve_spot_date():
     """
-    API להזמנת מקום חניה בתאריך מסוים
+    API להזמנת מקום חניה בתאריך מסוים עם שעות התחלה וסיום
     """
     data = request.json
     username = data.get("username")
     spot_id = data.get("spot_id")
     reservation_date = data.get("reservation_date")
+    start_time = data.get("start_time")
+    end_time = data.get("end_time")
 
-    if not username or not spot_id or not reservation_date:
-        return jsonify({"success": False, "message": "Username, Spot ID, and Reservation Date are required"}), 400
+    if not username or not spot_id or not reservation_date or not start_time or not end_time:
+        return jsonify({"success": False, "message": "Username, Spot ID, Reservation Date, Start Time, and End Time are required"}), 400
 
     try:
         cursor = db.cursor()
 
-        # בדיקה אם החניה כבר מוזמנת בתאריך זה
+        # בדיקה אם החניה כבר מוזמנת בשעות האלו
         check_query = """
             SELECT 1 FROM reservations
             WHERE parking_spot_id = %s AND reservation_date = %s
+            AND (start_time < %s AND end_time > %s)
         """
-        cursor.execute(check_query, (spot_id, reservation_date))
+        cursor.execute(check_query, (spot_id, reservation_date, end_time, start_time))
         result = cursor.fetchone()
 
         if result:
-            return jsonify({"success": False, "message": "Parking spot is already reserved for this date"}), 409
+            return jsonify({"success": False, "message": "Parking spot is already reserved for this time"}), 409
 
         # הוספת ההזמנה אם החניה פנויה
         insert_query = """
-            INSERT INTO reservations (parking_spot_id, username, reservation_date, status)
-            VALUES (%s, %s, %s, 'Reserved')
+            INSERT INTO reservations (parking_spot_id, username, reservation_date, start_time, end_time, status)
+            VALUES (%s, %s, %s, %s, %s, 'Reserved')
         """
-        cursor.execute(insert_query, (spot_id, username, reservation_date))
+        cursor.execute(insert_query, (spot_id, username, reservation_date, start_time, end_time))
         db.commit()
 
-        return jsonify({"success": True, "message": f"Spot {spot_id} reserved for {reservation_date}"})
+        return jsonify({"success": True, "message": f"Spot {spot_id} reserved successfully for {reservation_date} from {start_time} to {end_time}"})
     except Exception as e:
         print("Error reserving spot:", e)
         db.rollback()
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
     finally:
         cursor.close()
-        
+
 @app.route('/user-reservations', methods=['GET'])
 def get_user_reservations():
     """
@@ -238,42 +260,6 @@ def get_parking_spots_by_date():
     except Exception as e:
         print("Error fetching parking spots by date:", e)
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
-    finally:
-        cursor.close()
-
-
-@app.route('/delete-reservation', methods=['POST'])
-def delete_reservation():
-    """
-    API למחיקת חניה מטבלת reservations על בסיס spot_id ו-reservation_date
-    """
-    data = request.json
-    spot_id = data.get("spot_id")
-    reservation_date = data.get("reservation_date")
-
-    if not spot_id or not reservation_date:
-        return jsonify({"success": False, "message": "Spot ID and Reservation Date are required"}), 400
-
-    try:
-        cursor = db.cursor()
-
-        # מחיקת ההזמנה מטבלת reservations
-        query_delete_reservation = """
-            DELETE FROM reservations 
-            WHERE parking_spot_id = %s AND reservation_date = %s
-        """
-        cursor.execute(query_delete_reservation, (spot_id, reservation_date))
-        db.commit()
-
-        # בדיקה אם נמחקה רשומה
-        if cursor.rowcount == 0:
-            return jsonify({"success": False, "message": "No reservation found to delete"}), 404
-
-        return jsonify({"success": True, "message": "Reservation deleted successfully!"})
-    except Exception as e:
-        print("Error deleting reservation:", e)
-        db.rollback()
-        return jsonify({"success": False, "error": "Unable to delete reservation"}), 500
     finally:
         cursor.close()
 
@@ -341,11 +327,6 @@ def recommend_parking():
         return jsonify({"success": False, "error": "Unable to recommend parking spot"}), 500
     finally:
         cursor.close()
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
 @app.route('/signup', methods=['POST', 'OPTIONS'])
 def signup():
     """
@@ -389,3 +370,7 @@ def signup():
         return jsonify({"success": False, "message": "Error"}), 500
     finally:
         cursor.close()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
