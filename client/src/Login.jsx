@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-
 import "./Login.css";
+import logo from "./assets/logo.png"; // Importing the logo from src/assets
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -32,20 +31,20 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
-        // שמירת שם המשתמש ותמונת הפרופיל ב-LocalStorage
+        // Save username and profile picture to localStorage
         localStorage.setItem("username", data.username);
         localStorage.setItem("profilePicture", data.profile_picture);
 
-        // ניתוב לפי תפקיד
+        // Navigate based on role
         if (data.role === "admin") {
-          navigate("/admin"); // ניתוב לעמוד admin
+          navigate("/admin");
         } else if (data.role === "client") {
-          navigate("/home"); // ניתוב לעמוד הבית
+          navigate("/home");
         } else {
           setErrorMessage("Role not recognized.");
         }
       } else {
-        setErrorMessage(data.message); // הצגת שגיאה למשתמש
+        setErrorMessage(data.message);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -56,14 +55,17 @@ const Login = () => {
   return (
     <div className="login-page">
       <header className="homepage-header">
-        <div className="logo">SPMS</div>
+        <div className="logo">
+          <img src={logo} alt="SPMS Logo" className="logo-image" /> {/* Logo */}
+          SPMS
+        </div>
         <nav className="navbar">
           <ul>
             <li>
-              <a href="#contact-footer">Contact</a>
+              <a href="/About us">About us</a>
             </li>
             <li>
-              <Link to = "/signup">Sign Up</Link>
+              <a href="/Sign up">Sign up</a>
             </li>
           </ul>
         </nav>
@@ -71,7 +73,7 @@ const Login = () => {
 
       <main className="login-main">
         <div className="login-container">
-          <h1>Login</h1>
+          <h1></h1>
           <form onSubmit={handleSubmit} className="login-form">
             <input
               type="text"
