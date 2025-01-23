@@ -221,4 +221,20 @@ body {
     transform: translateY(-50%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל */
   }
+  .time-picker-container {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+    align-items: center;
+  }
+  
+  .time-picker-container label {
+    font-weight: bold;
+  }
+  
+  .time-picker-container input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
   

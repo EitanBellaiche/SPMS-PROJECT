@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "./ParkingReservation.css";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = spot.isRecommended ? "recommended-spot" : "";
+  const rowClass = spot.status === "Occupied" ? "occupied-spot" : "available-spot";
 
   return (
     <tr key={spot.id} className={rowClass}>
-      <td>
-        {spot.id}
-        {spot.isRecommended && <span className="recommended-badge">R</span>}
-      </td>
+      <td>{spot.id}</td>
       <td>{spot.spot_code}</td>
       <td>Level {spot.level}</td>
       <td>
-        <button className="reserve-button" onClick={() => onReserve(spot.id)}>
-          Reserve
-        </button>
+        {spot.status === "Available" ? (
+          <button className="reserve-button" onClick={() => onReserve(spot.id)}>
+            Reserve
+          </button>
+        ) : (
+          <span className="status-text">Occupied</span>
+        )}
       </td>
     </tr>
   );
@@ -28,69 +28,66 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
   }
 
   return (
-    <div className="parking-table-container">
-      <table className="parking-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Spot Code</th>
-            <th>Level</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {parkingSpots.map((spot) => (
-            <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <table className="parking-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Spot Code</th>
+          <th>Level</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {parkingSpots.map((spot) => (
+          <ParkingSpotRow key={spot.id} spot={spot} onReserve={onReserve} />
+        ))}
+      </tbody>
+    </table>
   );
 };
 
 const ParkingReservation = () => {
   const [parkingSpots, setParkingSpots] = useState([]);
-  const [username, setUsername] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
+    const storedUsername = localStorage.getItem("username") || "default_user";
+    setUsername(storedUsername);
   }, []);
 
-  useEffect(() => {
-    const fetchAvailableSpots = async () => {
-      if (!selectedDate) return;
+  const fetchAvailableSpots = async () => {
+    if (!selectedDate || !startTime || !endTime) {
+      alert("Please select a date, start time, and end time.");
+      return;
+    }
 
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `http://127.0.0.1:5000/parking-spots-by-date?reservation_date=${selectedDate}`
-        );
-        const data = await response.json();
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}`
+      );
+      const data = await response.json();
 
-        if (data.success) {
-          setParkingSpots(data.parkingSpots);
-        } else {
-          console.error("Failed to fetch parking spots:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching parking spots:", error);
-      } finally {
-        setLoading(false);
+      if (data.success) {
+        setParkingSpots(data.parkingSpots);
+      } else {
+        alert(data.message || "Error fetching parking spots.");
       }
-    };
+    } catch (error) {
+      alert("An error occurred while fetching parking spots.");
+      console.error("Error fetching parking spots:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAvailableSpots();
-  }, [selectedDate]);
-
-  const reserveSpot = async (id) => {
-    if (!selectedDate) {
-      alert("Please select a date before reserving.");
+  const reserveSpot = async (spotId) => {
+    if (!selectedDate || !startTime || !endTime) {
+      alert("Please provide all details before reserving.");
       return;
     }
 
@@ -98,47 +95,75 @@ const ParkingReservation = () => {
       const response = await fetch("http://127.0.0.1:5000/reserve-spot-date", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, spot_id: id, reservation_date: selectedDate })
+        body: JSON.stringify({
+          username,
+          spot_id: spotId,
+          reservation_date: selectedDate,
+          start_time: startTime,
+          end_time: endTime,
+        }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        alert(`Spot ${id} reserved successfully for ${selectedDate}`);
-        setParkingSpots((prevSpots) => prevSpots.filter((spot) => spot.id !== id));
+      if (data.success) {
+        alert(data.message);
+        fetchAvailableSpots(); // Refresh spots after reservation
       } else {
-        alert(data.message || "Failed to reserve the spot");
+        alert(data.message || "Failed to reserve spot.");
       }
     } catch (error) {
+      alert("An error occurred while reserving the spot.");
       console.error("Error reserving spot:", error);
-      alert("An error occurred while reserving the spot. Please try again.");
     }
   };
 
   return (
     <div className="reservation-page-container">
       <header className="reservation-header">
-        <div className="logo">SPMS</div>
-        <div className="profile">
-           <div className="profile-icon-letter">L</div>
-       </div>
+        <h1>Parking Reservation</h1>
+        {username && <p>Welcome, {username}</p>}
       </header>
-
 
       <main className="reservation-main">
         <div className="parking-reservation">
-          <h2>Reserve a Parking Spot</h2>
-          <div className="date-picker-container">
-            <label htmlFor="reservation-date">Select Date:</label>
-            <input type="date" id="reservation-date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+          <h2>Find and Reserve Parking</h2>
+          <div className="date-time-picker">
+            <label>
+              Date:
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </label>
+            <label>
+              Start Time:
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </label>
+            <label>
+              End Time:
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </label>
           </div>
-          {loading ? null : <ParkingTable parkingSpots={parkingSpots} onReserve={reserveSpot} />}
+          <button onClick={fetchAvailableSpots} className="search-button">
+            Search
+          </button>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <ParkingTable parkingSpots={parkingSpots} onReserve={reserveSpot} />
+          )}
         </div>
       </main>
-
-      <footer className="footer">
-        © 2024 Smart Parking Management System. All rights reserved.
-      </footer>
     </div>
   );
 };
