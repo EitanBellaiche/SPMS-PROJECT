@@ -16,6 +16,10 @@ const ParkingSpotRow = ({ spot, onReserve }) => {
       <td>{spot.spot_code}</td>
       <td>Level {spot.level}</td>
       <td>
+        {spot.is_electric && <span>⚡ Electric</span>}{" "}
+        {spot.is_disabled && <span>♿ Disabled</span>}
+      </td>
+      <td>
         {spot.status === "Available" ? (
           <button className="reserve-button" onClick={() => onReserve(spot.id)}>
             Reserve
@@ -40,6 +44,7 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
           <th>ID</th>
           <th>Spot Code</th>
           <th>Level</th>
+          <th>Features</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -88,7 +93,7 @@ const ParkingReservation = () => {
 
       // Fetch available spots
       const response = await fetch(
-        `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}`
+        `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
       );
       const data = await response.json();
 

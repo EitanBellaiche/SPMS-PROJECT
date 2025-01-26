@@ -55,12 +55,27 @@ def get_parking_spots():
     reservation_date = request.args.get("reservation_date")
     start_time = request.args.get("start_time")
     end_time = request.args.get("end_time")
+    username = request.args.get("username")  # קבלת שם המשתמש
 
-    if not reservation_date or not start_time or not end_time:
-        return jsonify({"success": False, "message": "Date and time range are required"}), 400
+    if not reservation_date or not start_time or not end_time or not username:
+        return jsonify({"success": False, "message": "All fields are required"}), 400
 
     try:
         cursor = db.cursor()
+
+        # שליפת הצרכים של המשתמש
+        user_query = """
+            SELECT is_electric_car, is_disabled_user
+            FROM users
+            WHERE username = %s
+        """
+        cursor.execute(user_query, (username,))
+        user_preferences = cursor.fetchone()
+
+        is_electric_car = user_preferences[0]
+        is_disabled_user = user_preferences[1]
+
+        # שאילתה מותאמת לצרכי המשתמש
         query = """
             SELECT ps.id, ps.spot_code, ps.level,
                    CASE 
@@ -71,13 +86,31 @@ def get_parking_spots():
                            AND (r.start_time < %s AND r.end_time > %s)
                        ) THEN 'Occupied' 
                        ELSE 'Available' 
-                   END AS status
+                   END AS status,
+                   ps.is_electric,
+                   ps.is_disabled
             FROM parking_spots ps
+            WHERE ps.status = 'Available'
+              AND (
+                  (%s = TRUE AND ps.is_electric = TRUE) OR  -- חניות חשמליות אם המשתמש עם רכב חשמלי
+                  (%s = TRUE AND ps.is_disabled = TRUE) OR  -- חניות לנכים אם המשתמש נכה
+                  (ps.is_electric = FALSE AND ps.is_disabled = FALSE)  -- חניות רגילות
+              )
+            ORDER BY ps.id ASC
         """
-        cursor.execute(query, (reservation_date, end_time, start_time))
+        cursor.execute(query, (reservation_date, end_time, start_time, is_electric_car, is_disabled_user))
         rows = cursor.fetchall()
+
         parking_spots = [
-            {"id": row[0], "spot_code": row[1], "level": row[2], "status": row[3]} for row in rows
+            {
+                "id": row[0],
+                "spot_code": row[1],
+                "level": row[2],
+                "status": row[3],
+                "is_electric": row[4],
+                "is_disabled": row[5],
+            }
+            for row in rows
         ]
         return jsonify({"success": True, "parkingSpots": parking_spots})
     except Exception as e:
@@ -85,6 +118,7 @@ def get_parking_spots():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
+
 
         
 @app.route('/cancel-reservation', methods=['POST'])
@@ -282,7 +316,7 @@ def get_parking_spots_by_date():
 @app.route('/recommend-parking', methods=['GET'])
 def recommend_parking():
     """
-    API לחיפוש חניה מומלצת לפי מבנה ורמת חניה
+    API לחיפוש חניה מומלצת לפי מבנה, רמת חניה וצרכים מיוחדים
     """
     username = request.args.get('username')
     reservation_date = request.args.get('reservation_date')
@@ -294,12 +328,17 @@ def recommend_parking():
         cursor = db.cursor()
 
         # שליפת פרטי המשתמש
-        cursor.execute("SELECT building FROM users WHERE username = %s", (username,))
+        cursor.execute("""
+            SELECT building, is_electric_car, is_disabled_user 
+            FROM users 
+            WHERE username = %s
+        """, (username,))
         user_data = cursor.fetchone()
+
         if not user_data:
             return jsonify({"success": False, "message": "User not found"}), 404
 
-        user_building = user_data[0]
+        user_building, is_electric_car, is_disabled_user = user_data
 
         # מיפוי בין מבנים לרמות חניה
         building_to_level = {
@@ -310,21 +349,29 @@ def recommend_parking():
         # רמת החניה המועדפת על פי המבנה
         preferred_level = building_to_level.get(user_building)
 
-        # שליפת חניות פנויות בתאריך המבוקש
+        # שאילתה למשתמשים עם צרכים מיוחדים
         query = """
             SELECT ps.id, ps.spot_code, ps.level
             FROM parking_spots ps
             LEFT JOIN reservations r
             ON ps.id = r.parking_spot_id AND r.reservation_date = %s
-            WHERE ps.status = 'Available' AND r.id IS NULL
+            WHERE ps.status = 'Available' 
+              AND r.id IS NULL
+              AND (
+                  (%s = TRUE AND ps.is_electric = TRUE) OR  -- חניות חשמליות
+                  (%s = TRUE AND ps.is_disabled = TRUE) OR  -- חניות לנכים
+                  (ps.is_electric = FALSE AND ps.is_disabled = FALSE)  -- חניות רגילות
+              )
             ORDER BY
                 CASE
-                    WHEN ps.level = %s THEN 0  -- העדפה לרמה תואמת למבנה
-                    ELSE 1
+                    WHEN ps.is_electric = TRUE THEN 0  -- חניות חשמליות
+                    WHEN ps.is_disabled = TRUE THEN 1  -- חניות לנכים
+                    WHEN ps.level = %s THEN 2         -- התאמה לרמת המבנה
+                    ELSE 3                            -- כל השאר
                 END, ps.id ASC
             LIMIT 1
         """
-        cursor.execute(query, (reservation_date, preferred_level))
+        cursor.execute(query, (reservation_date, is_electric_car, is_disabled_user, preferred_level))
         recommended_spot = cursor.fetchone()
 
         if recommended_spot:
@@ -343,6 +390,7 @@ def recommend_parking():
         return jsonify({"success": False, "error": "Unable to recommend parking spot"}), 500
     finally:
         cursor.close()
+
 @app.route('/signup', methods=['POST', 'OPTIONS'])
 def signup():
     """
@@ -456,8 +504,6 @@ def reserve_future_parking():
 
     finally:
         cursor.close()
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
