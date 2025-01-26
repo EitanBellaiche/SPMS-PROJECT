@@ -76,7 +76,6 @@ const Login = () => {
 
       <main className="login-main">
         <div className="login-container">
-          <h1>Login</h1>
           <form onSubmit={handleSubmit} className="login-form">
             <input
               type="text"
