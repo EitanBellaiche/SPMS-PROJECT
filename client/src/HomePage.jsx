@@ -71,13 +71,6 @@ const HomePage = () => {
           >
             Parking reservation <span className="button-icon"></span>
           </button>
-          <button
-            className="action-button"
-            onClick={() => navigate("/cancel-parking")}
-          >
-            Cancel Parking
-          </button>
-          {/* Reserve Parking Routine Button */}
           {role !== "guest" && (
             <button
               className="action-button"
@@ -86,6 +79,13 @@ const HomePage = () => {
               Reserve Parking Routine <span className="button-icon"></span>
             </button>
           )}
+          <button
+            className="action-button"
+            onClick={() => navigate("/cancel-parking")}
+          >
+            my Parkings
+          </button>
+          {/* Reserve Parking Routine Button */}
         </section>
       </div>
 
