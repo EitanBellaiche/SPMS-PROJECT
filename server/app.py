@@ -2,19 +2,28 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
+import os  # לשימוש במשתני סביבה
 from datetime import datetime, timedelta 
 
 app = Flask(__name__)
 CORS(app)
 
+db = psycopg2.connect(
+    host="dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com",
+    database="spms_database",
+    user="spms_database_user",
+    password="iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx",
+    port=5432
+)
+
 # התחברות ל-PostgreSQL
 try:
     db = psycopg2.connect(
-        host="dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com",
-        database="spms_database",
-        user="spms_database_user",
-        password="iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx",
-        port=5432
+        host=os.getenv("DB_HOST", "dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com"),
+        database=os.getenv("DB_NAME", "spms_database"),
+        user=os.getenv("DB_USER", "spms_database_user"),
+        password=os.getenv("DB_PASSWORD", "iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx"),
+        port=os.getenv("DB_PORT", 5432)
     )
     print("Database connected successfully!")
 except psycopg2.OperationalError as e:
@@ -564,5 +573,4 @@ def reserve_future_parking():
         cursor.close()
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(host='0.0.0.0', port=5000)
