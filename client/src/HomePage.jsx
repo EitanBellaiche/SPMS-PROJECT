@@ -5,12 +5,14 @@ import "./HomePage.css";
 const HomePage = () => {
   const [username, setUsername] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [role, setRole] = useState(""); // שמירת התפקיד
   const navigate = useNavigate();
 
   useEffect(() => {
     // שליפת הנתונים מ-LocalStorage
     const storedUsername = localStorage.getItem("username");
     const storedProfilePicture = localStorage.getItem("profilePicture");
+    const storedRole = localStorage.getItem("role");
 
     if (storedUsername) {
       setUsername(storedUsername);
@@ -18,6 +20,10 @@ const HomePage = () => {
 
     if (storedProfilePicture) {
       setProfilePicture(storedProfilePicture);
+    }
+
+    if (storedRole) {
+      setRole(storedRole); // שמירת התפקיד ב-state
     }
   }, []);
 
@@ -71,6 +77,15 @@ const HomePage = () => {
           >
             Cancel Parking
           </button>
+          {/* Reserve Parking Routine Button */}
+          {role !== "guest" && (
+            <button
+              className="action-button"
+              onClick={() => navigate("/employeePage")}
+            >
+              Reserve Parking Routine <span className="button-icon"></span>
+            </button>
+          )}
         </section>
       </div>
 

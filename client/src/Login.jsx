@@ -31,14 +31,17 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Save username and profile picture to localStorage
+        // Save username, profile picture, and role to localStorage
         localStorage.setItem("username", data.username);
         localStorage.setItem("profilePicture", data.profile_picture);
+        localStorage.setItem("role", data.role); // Save role to localStorage
 
         // Navigate based on role
         if (data.role === "admin") {
           navigate("/admin");
-        } else if (data.role === "employee" || data.role === "guest") {
+        } else if (data.role === "guest") {
+          navigate("/home");
+        } else if (data.role === "employee") {
           navigate("/home");
         } else {
           setErrorMessage("Role not recognized.");
@@ -56,7 +59,7 @@ const Login = () => {
     <div className="login-page">
       <header className="homepage-header">
         <div className="logo">
-          <img src={logo} alt="SPMS Logo" className="logo-image" /> {/* Logo */}
+          <img src={logo} alt="SPMS Logo" className="logo-image" />
           SPMS
         </div>
         <nav className="navbar">
@@ -73,7 +76,7 @@ const Login = () => {
 
       <main className="login-main">
         <div className="login-container">
-          <h1></h1>
+          <h1>Login</h1>
           <form onSubmit={handleSubmit} className="login-form">
             <input
               type="text"

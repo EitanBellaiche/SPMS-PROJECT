@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
+from datetime import datetime, timedelta 
 
 app = Flask(__name__)
 CORS(app)
@@ -385,6 +386,78 @@ def signup():
         return jsonify({"success": False, "message": "Error"}), 500
     finally:
         cursor.close()
+
+@app.route('/reserve-future-parking', methods=['POST'])
+def reserve_future_parking():
+    """
+    API להזמנת חניות חוזרות
+    """
+    data = request.json
+
+    username = data.get("username")
+    selected_days = data.get("selectedDays")  # ['Monday', 'Wednesday']
+    start_time = data.get("startTime")  # לדוגמה: '13:00'
+    end_time = data.get("endTime")  # לדוגמה: '17:00'
+    reservation_duration = int(data.get("reservationDuration", 0))  # מספר שבועות
+
+    # בדיקה שכל הנתונים הדרושים נשלחו
+    if not username or not selected_days or not start_time or not end_time or reservation_duration <= 0:
+        return jsonify({"success": False, "message": "All fields are required"}), 400
+
+    try:
+        cursor = db.cursor()
+
+        # יצירת רשימת תאריכים לכל הימים הנבחרים
+        start_date = datetime.now().date()
+        end_date = start_date + timedelta(weeks=reservation_duration)
+        reservation_dates = []
+
+        while start_date <= end_date:
+            if start_date.strftime("%A") in selected_days:
+                reservation_dates.append(start_date)
+            start_date += timedelta(days=1)
+
+        # בדיקה אם החניות פנויות לכל התאריכים והשעות
+        unavailable_dates = []
+        for date in reservation_dates:
+            check_query = """
+                SELECT 1 FROM reservations
+                WHERE reservation_date = %s
+                AND (start_time < %s AND end_time > %s)
+            """
+            cursor.execute(check_query, (date, end_time, start_time))
+            if cursor.fetchone():
+                unavailable_dates.append(str(date))
+
+        # אם יש תאריכים שבהם החניות אינן פנויות
+        if unavailable_dates:
+            return jsonify({
+                "success": False,
+                "message": f"Some spots are unavailable on: {', '.join(unavailable_dates)}"
+            }), 409
+
+        # הוספת ההזמנות לחניות פנויות
+        for date in reservation_dates:
+            insert_query = """
+                INSERT INTO reservations (parking_spot_id, username, reservation_date, start_time, end_time, status)
+                VALUES (%s, %s, %s, %s, %s, 'Reserved')
+            """
+            # מציין מקום זמני parking_spot_id=1, ניתן לשנות ל-spot_id מתאים
+            cursor.execute(insert_query, (1, username, date, start_time, end_time))
+
+        # שמירת השינויים
+        db.commit()
+        return jsonify({"success": True, "message": "Future parking reservations have been successfully made!"})
+
+    except Exception as e:
+        print("Error reserving future parking:", e)
+        db.rollback()
+        return jsonify({"success": False, "error": "Unable to reserve future parking"}), 500
+
+    finally:
+        cursor.close()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
