@@ -9,18 +9,17 @@
 
 /* Header */
 .homepage-header {
-    display: flex; /* יישור אלמנטים */
-    justify-content: space-between; /* ריווח בין הלוגו לקישורים */
-    align-items: center; /* ממרכז את התוכן אנכית */
-    position: fixed; /* מקבע את ה-header לחלק העליון */
-    top: 0; /* מצמיד לחלק העליון */
-    left: 0; /* מצמיד לשמאל */
-    width: 100%; /* מכסה את כל רוחב הדף */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* מקבע את ההאדר לחלק העליון */
+    top: 0;
+    left: 0;
+    width: 100%; /* מכסה את כל רוחב המסך */
     background-color: #1565c0; /* צבע רקע */
     color: white; /* צבע טקסט */
-    padding: 10px 20px; /* ריווח פנימי */
-    font-size: 1.5rem; /* גודל טקסט */
-    z-index: 1000; /* מעל כל האלמנטים האחרים */
+    padding: 10px 0; /* מרווח פנימי אנכי בלבד */
+    z-index: 1000; /* מעלה את האדר מעל אלמנטים אחרים */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* הצללה */
 }
 
@@ -28,15 +27,21 @@
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    margin-left: 20px; /* מרווח משמאל */
 }
 
 /* Navigation links */
+nav {
+    margin-right: 20px; /* מרווח מימין */
+}
+
 nav a {
     text-decoration: none;
     color: white;
     font-size: 1rem;
     margin-left: 15px;
 }
+
 
 /* Main Content */
 .cancel-main {

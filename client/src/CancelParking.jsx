@@ -5,8 +5,6 @@ import "./CancelParking.css";
 const CancelParking = () => {
   const [reservations, setReservations] = useState([]);
   const [username, setUsername] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
@@ -14,49 +12,35 @@ const CancelParking = () => {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
-    const storedProfilePicture = localStorage.getItem("profilePicture");
-    const storedRole = localStorage.getItem("role");
-
     if (storedUsername) {
       setUsername(storedUsername);
-    }
 
-    if (storedProfilePicture) {
-      setProfilePicture(storedProfilePicture);
-    }
+      const fetchReservations = async () => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
+          );
+          const data = await response.json();
 
-    if (storedRole) {
-      setRole(storedRole);
-    }
-
-    const fetchReservations = async () => {
-      if (!storedUsername) {
-        setError("No username found. Please log in.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
-        );
-        const data = await response.json();
-
-        if (data.success) {
-          setReservations(data.reservations);
-        } else {
+          if (data.success) {
+            setReservations(data.reservations);
+          } else {
+            setError("Failed to load your reservations.");
+          }
+        } catch (err) {
+          console.error("Error fetching reservations:", err);
           setError("Failed to load your reservations.");
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error("Error fetching reservations:", err);
-        setError("Failed to load your reservations.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchReservations();
-  }, []);
+      fetchReservations();
+    } else {
+      setError("No username found. Please log in.");
+      setLoading(false);
+    }
+  }, [navigate]);
 
   const cancelReservation = async (spotId, reservationDate) => {
     try {
@@ -104,12 +88,9 @@ const CancelParking = () => {
   if (error) {
     return (
       <div className="cancel-page-container">
-        {/* Header */}
-        <header className="homepage-header">
+        <header className="cancel-header">
           <div className="logo">SPMS</div>
-          <nav>
-            <a href="#contact">Contact</a>
-          </nav>
+          <h1>Cancel Parking Reservations</h1>
         </header>
         <main className="cancel-main">
           <p className="error-message">{error}</p>
@@ -123,14 +104,12 @@ const CancelParking = () => {
 
   return (
     <div className="cancel-page-container">
-      {/* Header */}
       <header className="homepage-header">
         <div className="logo">SPMS</div>
         <nav>
           <a href="#contact">Contact</a>
         </nav>
       </header>
-
       <main className="cancel-main">
         {reservations.length > 0 ? (
           <div className="reservations-list">
@@ -146,9 +125,7 @@ const CancelParking = () => {
               </thead>
               <tbody>
                 {reservations.map((reservation) => (
-                  <tr
-                    key={`${reservation.spot_id}-${reservation.reservation_date}`}
-                  >
+                  <tr key={`${reservation.spot_id}-${reservation.reservation_date}`}>
                     <td>{reservation.spot_code}</td>
                     <td>{reservation.reservation_date}</td>
                     <td>{reservation.status}</td>
@@ -190,19 +167,42 @@ const CancelParking = () => {
         <div className="details-modal">
           <div className="modal-content">
             <h2>Reservation Details</h2>
-            <p>
-              <strong>Spot Code:</strong> {selectedReservation.spot_code}
-            </p>
-            <p>
-              <strong>Date:</strong> {selectedReservation.reservation_date}
-            </p>
-            <p>
-              <strong>Start Time:</strong> {selectedReservation.start_time}
-            </p>
-            <p>
-              <strong>End Time:</strong> {selectedReservation.end_time}
-            </p>
-            <button className="close-modal-button" onClick={closeDetailsModal}>
+            <div className="parking-details">
+              <div className="detail-item">
+                <span className="detail-icon">📍</span>
+                <span>
+                  <strong>Spot Code:</strong> {selectedReservation.spot_code}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-icon">📅</span>
+                <span>
+                  <strong>Date:</strong> {selectedReservation.reservation_date}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-icon">⏰</span>
+                <span>
+                  <strong>Start Time:</strong> {selectedReservation.start_time}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-icon">⏱️</span>
+                <span>
+                  <strong>End Time:</strong> {selectedReservation.end_time}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-icon">📋</span>
+                <span>
+                  <strong>Status:</strong> {selectedReservation.status}
+                </span>
+              </div>
+            </div>
+            <button
+              className="close-modal-button"
+              onClick={closeDetailsModal}
+            >
               Close
             </button>
           </div>
