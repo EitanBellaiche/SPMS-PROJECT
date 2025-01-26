@@ -3,29 +3,26 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: url('./assets/background.png') no-repeat center center; /* Add background image */
-  background-size: cover; /* Ensure the image covers the entire background */
+  background: url('./assets/background.png') no-repeat center center;
+  background-size: cover;
   color: #2c3e50;
 }
-
 
 .login-main {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 200px;
+  padding: 200px; /* יתעדכן ברספונסיביות */
 }
 
 .login-container {
-  /*background-color: white;*/
   padding: 40px;
   border-radius: 15px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   max-width: 400px;
   width: 90%;
-  
 }
 
 /* Form Styles */
@@ -73,8 +70,59 @@
 }
 
 .logo-image {
-  width: 40px; /* Adjust size as needed */
-  height: 40px; /* Make sure width and height are equal */
-  object-fit: contain; /* Ensures the logo is not distorted */
-  border-radius: 50%; /* Makes the image circular */
-} 
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .login-main {
+    padding: 100px;
+  }
+
+  .login-container {
+    padding: 30px;
+  }
+
+  .login-form input {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .login-form button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .logo-image {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-main {
+    padding: 50px;
+  }
+
+  .login-container {
+    padding: 20px;
+  }
+
+  .login-form input {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  .login-form button {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .logo-image {
+    width: 25px;
+    height: 25px;
+  }
+}
