@@ -6,15 +6,15 @@ import Signup from "./Signup";
 import AdminPage from "./AdminPage";
 import ParkingReservation from "./ParkingReservation";
 import CancelParking from "./CancelParking";
-import EmployeeReservation from "./EmployeeReservation"; // Import the EmployeeReservation
+import EmployeeReservation from "./EmployeeReservation";
 
 const App = () => {
   return (
-    <Router basename="/spms">
+    <Router>
       <Routes>
         {/* Root Route */}
         <Route path="/" element={<Login />} />
-        
+
         {/* User Routes */}
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
