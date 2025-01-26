@@ -38,7 +38,7 @@ const Login = () => {
         // Navigate based on role
         if (data.role === "admin") {
           navigate("/admin");
-        } else if (data.role === "client") {
+        } else if (data.role === "employee" || data.role === "guest") {
           navigate("/home");
         } else {
           setErrorMessage("Role not recognized.");
