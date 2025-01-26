@@ -24,7 +24,11 @@ const EmployeeReservation = () => {
 
   const generateTimeOptions = () => {
     const options = [];
-    for (let hour = 0; hour < 24; hour++) {
+    for (let hour = 6; hour <= 24; hour++) {
+      if (hour === 24) {
+        options.push("00:00"); // סיום הטווח בחצות
+        break;
+      }
       const hourStr = hour.toString().padStart(2, "0");
       options.push(`${hourStr}:00`);
       options.push(`${hourStr}:30`);
