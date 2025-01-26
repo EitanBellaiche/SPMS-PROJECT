@@ -6,15 +6,18 @@ import Signup from "./Signup";
 import AdminPage from "./AdminPage";
 import ParkingReservation from "./ParkingReservation";
 import CancelParking from "./CancelParking";
-import EmployeeReservation from "./EmployeeReservation";
+import EmployeeReservation from "./EmployeeReservation"; // Import the EmployeePage
 
 const App = () => {
+  // הגדרת basename דינמית בהתאם לסביבה
+  const basename = process.env.REACT_APP_BASENAME || "/";
+
   return (
-    <Router>
+    <Router basename={basename}>
       <Routes>
         {/* Root Route */}
         <Route path="/" element={<Login />} />
-
+        
         {/* User Routes */}
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
