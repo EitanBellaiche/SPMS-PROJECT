@@ -8,28 +8,21 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 CORS(app)
 
-db = psycopg2.connect(
-    host="dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com",
-    database="spms_database",
-    user="spms_database_user",
-    password="iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx",
-    port=5432
-)
-
 # התחברות ל-PostgreSQL
 try:
-   db = psycopg2.connect(
-    host=os.getenv("DB_HOST", "dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com"),
-    database=os.getenv("DB_NAME", "spms_database"),
-    user=os.getenv("DB_USER", "spms_database_user"),
-    password=os.getenv("DB_PASSWORD", "iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx"),
-    port=os.getenv("DB_PORT", 5432),
-    sslmode="require"  # דרוש חיבור עם SSL
-)
-   print("Database connected successfully!")
+    db = psycopg2.connect(
+        host=os.getenv("DB_HOST", "dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com"),
+        database=os.getenv("DB_NAME", "spms_database"),
+        user=os.getenv("DB_USER", "spms_database_user"),
+        password=os.getenv("DB_PASSWORD", "iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx"),
+        port=os.getenv("DB_PORT", 5432),
+        sslmode="require"  # חובה להשתמש ב-SSL
+    )
+    print("Database connected successfully!")
 except psycopg2.OperationalError as e:
     print(f"Database connection failed: {e}")
     exit(1)
+
 
 @app.route('/login', methods=['POST'])
 def login():
