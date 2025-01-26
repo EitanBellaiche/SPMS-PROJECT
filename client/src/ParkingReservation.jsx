@@ -12,7 +12,6 @@ const ParkingSpotRow = ({ spot, onReserve }) => {
 
   return (
     <tr key={spot.id} className={rowClass}>
-      <td>{spot.id}</td>
       <td>{spot.spot_code}</td>
       <td>Level {spot.level}</td>
       <td>
@@ -41,7 +40,6 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
     <table className="parking-table">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Spot Code</th>
           <th>Level</th>
           <th>Features</th>
@@ -72,7 +70,11 @@ const ParkingReservation = () => {
 
   const generateTimeOptions = () => {
     const options = [];
-    for (let hour = 0; hour < 24; hour++) {
+    for (let hour = 6; hour <= 24; hour++) {
+      if (hour === 24) {
+        options.push("00:00"); // Add midnight
+        break;
+      }
       const hourStr = hour.toString().padStart(2, "0");
       options.push(`${hourStr}:00`);
       options.push(`${hourStr}:30`);
@@ -91,7 +93,6 @@ const ParkingReservation = () => {
     try {
       setLoading(true);
 
-      // Fetch available spots
       const response = await fetch(
         `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
       );
@@ -100,7 +101,6 @@ const ParkingReservation = () => {
       if (data.success) {
         setParkingSpots(data.parkingSpots);
 
-        // Fetch recommended spot
         const recommendResponse = await fetch(
           `http://127.0.0.1:5000/recommend-parking?username=${username}&reservation_date=${selectedDate}`
         );
@@ -109,7 +109,6 @@ const ParkingReservation = () => {
         if (recommendData.success) {
           const recommendedSpot = recommendData.recommendedSpot;
 
-          // Highlight recommended spot in the list
           const updatedSpots = data.parkingSpots.map((spot) =>
             spot.id === recommendedSpot.id
               ? { ...spot, recommended: true }
