@@ -43,6 +43,7 @@ const EmployeeReservation = () => {
     try {
       setLoading(true);
 
+      // שליחת בקשה להזמנת חנייה חוזרת
       const response = await fetch("http://127.0.0.1:5000/reserve-future-parking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +59,20 @@ const EmployeeReservation = () => {
       const data = await response.json();
 
       if (data.success) {
-        alert("Future parking reservations were successful!");
+        // ניסיון לשלוף חנייה מומלצת
+        const recommendedResponse = await fetch(
+          `http://127.0.0.1:5000/recommend-parking?username=${username}&reservation_date=${new Date().toISOString().split("T")[0]}`
+        );
+
+        const recommendedData = await recommendedResponse.json();
+
+        if (recommendedData.success) {
+          alert(
+            `Future parking reservations were successful! Recommended parking spot: Spot ${recommendedData.recommendedSpot.spot_code}, Level ${recommendedData.recommendedSpot.level}`
+          );
+        } else {
+          alert("Future parking reservations were successful, but no recommended parking spot was found.");
+        }
       } else {
         alert(data.message || "Failed to reserve future parking.");
       }

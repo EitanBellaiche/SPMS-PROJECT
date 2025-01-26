@@ -438,7 +438,7 @@ def signup():
 @app.route('/reserve-future-parking', methods=['POST'])
 def reserve_future_parking():
     """
-    API להזמנת חניות חוזרות
+    API להזמנת חניות חוזרות עם חניות חלופיות במקרה הצורך
     """
     data = request.json
 
@@ -448,12 +448,24 @@ def reserve_future_parking():
     end_time = data.get("endTime")  # לדוגמה: '17:00'
     reservation_duration = int(data.get("reservationDuration", 0))  # מספר שבועות
 
-    # בדיקה שכל הנתונים הדרושים נשלחו
     if not username or not selected_days or not start_time or not end_time or reservation_duration <= 0:
         return jsonify({"success": False, "message": "All fields are required"}), 400
 
     try:
         cursor = db.cursor()
+
+        # שליפת פרטי המשתמש
+        cursor.execute("""
+            SELECT is_electric_car, is_disabled_user 
+            FROM users 
+            WHERE username = %s
+        """, (username,))
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        is_electric_car, is_disabled_user = user_data
 
         # יצירת רשימת תאריכים לכל הימים הנבחרים
         start_date = datetime.now().date()
@@ -465,37 +477,73 @@ def reserve_future_parking():
                 reservation_dates.append(start_date)
             start_date += timedelta(days=1)
 
-        # בדיקה אם החניות פנויות לכל התאריכים והשעות
+        # שמירת ההזמנות
+        reservations = []
         unavailable_dates = []
+
         for date in reservation_dates:
+            # ניסיון למצוא חנייה מומלצת תחילה
+            recommend_query = """
+                SELECT ps.id 
+                FROM parking_spots ps
+                LEFT JOIN reservations r
+                ON ps.id = r.parking_spot_id AND r.reservation_date = %s
+                WHERE ps.status = 'Available' 
+                  AND r.id IS NULL
+                  AND (
+                      (%s = TRUE AND ps.is_electric = TRUE) OR
+                      (%s = TRUE AND ps.is_disabled = TRUE) OR
+                      (ps.is_electric = FALSE AND ps.is_disabled = FALSE)
+                  )
+                ORDER BY 
+                    CASE 
+                        WHEN ps.is_electric = TRUE THEN 0
+                        WHEN ps.is_disabled = TRUE THEN 1
+                        ELSE 2
+                    END, ps.id ASC
+                LIMIT 1
+            """
+            cursor.execute(recommend_query, (date, is_electric_car, is_disabled_user))
+            recommended_spot = cursor.fetchone()
+
+            if recommended_spot:
+                spot_id = recommended_spot[0]
+            else:
+                # אין חנייה פנויה ליום הזה
+                unavailable_dates.append(str(date))
+                continue
+
+            # בדיקה אם החנייה פנויה בשעות האלו
             check_query = """
                 SELECT 1 FROM reservations
-                WHERE reservation_date = %s
+                WHERE parking_spot_id = %s
+                AND reservation_date = %s
                 AND (start_time < %s AND end_time > %s)
             """
-            cursor.execute(check_query, (date, end_time, start_time))
+            cursor.execute(check_query, (spot_id, date, end_time, start_time))
             if cursor.fetchone():
                 unavailable_dates.append(str(date))
+                continue
 
-        # אם יש תאריכים שבהם החניות אינן פנויות
-        if unavailable_dates:
-            return jsonify({
-                "success": False,
-                "message": f"Some spots are unavailable on: {', '.join(unavailable_dates)}"
-            }), 409
-
-        # הוספת ההזמנות לחניות פנויות
-        for date in reservation_dates:
+            # שמירת החנייה
             insert_query = """
                 INSERT INTO reservations (parking_spot_id, username, reservation_date, start_time, end_time, status)
                 VALUES (%s, %s, %s, %s, %s, 'Reserved')
             """
-            # מציין מקום זמני parking_spot_id=1, ניתן לשנות ל-spot_id מתאים
-            cursor.execute(insert_query, (1, username, date, start_time, end_time))
+            cursor.execute(insert_query, (spot_id, username, date, start_time, end_time))
+            reservations.append({"date": date, "spot_id": spot_id})
 
-        # שמירת השינויים
         db.commit()
-        return jsonify({"success": True, "message": "Future parking reservations have been successfully made!"})
+
+        if unavailable_dates:
+            return jsonify({
+                "success": True,
+                "message": "Partial reservations completed. Some dates were unavailable.",
+                "unavailableDates": unavailable_dates,
+                "reservations": reservations
+            })
+
+        return jsonify({"success": True, "message": "Future parking reservations were successfully made!", "reservations": reservations})
 
     except Exception as e:
         print("Error reserving future parking:", e)
