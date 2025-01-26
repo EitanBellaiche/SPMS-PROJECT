@@ -6,7 +6,7 @@ import os  # לשימוש במשתני סביבה
 from datetime import datetime, timedelta 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # התחברות ל-PostgreSQL
 try:
