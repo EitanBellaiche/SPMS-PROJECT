@@ -112,4 +112,116 @@
     .error-message, .loading-message {
         font-size: 0.9rem;
     }
+    /* כפתור "View Details" */
+.details-button {
+    background-color: #1e88e5; /* כחול */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 10px auto;
+    max-width: 200px;
+    width: 100%;
+}
+
+.details-button:hover {
+    background-color: #1565c0;
+}
+
+/* חלון פרטי ההזמנה */
+.details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* רקע כהה עם שקיפות */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* כדי לוודא שהחלון מעל הכל */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    text-align: left;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #1565c0;
+    text-align: center;
+}
+
+.modal-content p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.close-modal-button {
+    background-color: #e53935;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    max-width: 200px;
+}
+
+.close-modal-button:hover {
+    background-color: #d32f2f;
+}
+
+/* רספונסיביות לחלון */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .modal-content p {
+        font-size: 0.9rem;
+    }
+
+    .close-modal-button {
+        font-size: 0.9rem;
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 10px;
+    }
+
+    .modal-content h2 {
+        font-size: 1rem;
+    }
+
+    .modal-content p {
+        font-size: 0.8rem;
+    }
+
+    .close-modal-button {
+        font-size: 0.8rem;
+        max-width: 100px;
+    }
+}
+
+    
 }

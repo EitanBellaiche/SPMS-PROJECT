@@ -118,8 +118,6 @@ def get_parking_spots():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
-
-
         
 @app.route('/cancel-reservation', methods=['POST'])
 def cancel_reservation():
@@ -253,7 +251,7 @@ def reserve_spot_date():
 @app.route('/user-reservations', methods=['GET'])
 def get_user_reservations():
     """
-    API לשליפת כל ההזמנות של המשתמש
+    API לשליפת כל ההזמנות של המשתמש כולל מידע על spot_code ושעות
     """
     username = request.args.get("username")
 
@@ -263,21 +261,33 @@ def get_user_reservations():
     try:
         cursor = db.cursor()
         query = """
-            SELECT parking_spot_id, reservation_date, status 
-            FROM reservations 
-            WHERE username = %s
+            SELECT ps.spot_code, r.reservation_date, r.start_time, r.end_time, r.status
+            FROM reservations r
+            JOIN parking_spots ps ON r.parking_spot_id = ps.id
+            WHERE r.username = %s
+            ORDER BY r.reservation_date ASC, r.start_time ASC
         """
         cursor.execute(query, (username,))
         rows = cursor.fetchall()
+
         reservations = [
-            {"spot_id": row[0], "reservation_date": row[1], "status": row[2]} for row in rows
+            {
+                "spot_code": row[0],
+                "reservation_date": row[1].strftime('%Y-%m-%d'),
+                "start_time": row[2].strftime('%H:%M'),
+                "end_time": row[3].strftime('%H:%M'),
+                "status": row[4],
+            }
+            for row in rows
         ]
+
         return jsonify({"success": True, "reservations": reservations})
     except Exception as e:
         print("Error fetching user reservations:", e)
         return jsonify({"success": False, "error": "Unable to fetch reservations"}), 500
     finally:
         cursor.close()
+
 @app.route('/parking-spots-by-date', methods=['GET'])
 def get_parking_spots_by_date():
     reservation_date = request.args.get("reservation_date")

@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import "./CancelParking.css";
 
 const CancelParking = () => {
-  const [reservations, setReservations] = useState([]); // כל ההזמנות
+  const [reservations, setReservations] = useState([]);
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true); // טעינה
-  const [error, setError] = useState(""); // שגיאות
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedReservation, setSelectedReservation] = useState(null); // שמירת ההזמנה שנבחרה להצגת פרטים
   const navigate = useNavigate();
 
-  // שליפת שם המשתמש וההזמנות מהשרת
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
@@ -52,12 +52,11 @@ const CancelParking = () => {
           reservation_date: reservationDate,
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Reservation cancelled successfully!");
-        // עדכון הרשימה לאחר הביטול
         setReservations((prevReservations) =>
           prevReservations.filter(
             (reservation) =>
@@ -73,9 +72,16 @@ const CancelParking = () => {
       alert("Failed to cancel the reservation. Please try again.");
     }
   };
-  
 
-  // טעינה או שגיאה
+  // פונקציה להצגת פרטי ההזמנה
+  const viewReservationDetails = (reservation) => {
+    setSelectedReservation(reservation);
+  };
+
+  const closeDetailsModal = () => {
+    setSelectedReservation(null);
+  };
+
   if (loading) {
     return <div>Loading your reservations...</div>;
   }
@@ -97,7 +103,6 @@ const CancelParking = () => {
     );
   }
 
-  // הצגת ההזמנות
   return (
     <div className="cancel-page-container">
       <header className="cancel-header">
@@ -111,7 +116,7 @@ const CancelParking = () => {
             <table className="reservations-table">
               <thead>
                 <tr>
-                  <th>Spot ID</th>
+                  <th>Spot Code</th>
                   <th>Reservation Date</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -120,7 +125,7 @@ const CancelParking = () => {
               <tbody>
                 {reservations.map((reservation) => (
                   <tr key={`${reservation.spot_id}-${reservation.reservation_date}`}>
-                    <td>{reservation.spot_id}</td>
+                    <td>{reservation.spot_code}</td>
                     <td>{reservation.reservation_date}</td>
                     <td>{reservation.status}</td>
                     <td>
@@ -134,6 +139,12 @@ const CancelParking = () => {
                         }
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="details-button"
+                        onClick={() => viewReservationDetails(reservation)}
+                      >
+                        View Details
                       </button>
                     </td>
                   </tr>
@@ -150,6 +161,32 @@ const CancelParking = () => {
           </div>
         )}
       </main>
+
+      {selectedReservation && (
+        <div className="details-modal">
+          <div className="modal-content">
+            <h2>Reservation Details</h2>
+            <p>
+              <strong>Spot Code:</strong> {selectedReservation.spot_code}
+            </p>
+            <p>
+              <strong>Date:</strong> {selectedReservation.reservation_date}
+            </p>
+            <p>
+              <strong>Start Time:</strong> {selectedReservation.start_time}
+            </p>
+            <p>
+              <strong>End Time:</strong> {selectedReservation.end_time}
+            </p>
+            <button
+              className="close-modal-button"
+              onClick={closeDetailsModal}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
