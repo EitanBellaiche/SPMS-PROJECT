@@ -5,42 +5,58 @@ import "./CancelParking.css";
 const CancelParking = () => {
   const [reservations, setReservations] = useState([]);
   const [username, setUsername] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedReservation, setSelectedReservation] = useState(null); // שמירת ההזמנה שנבחרה להצגת פרטים
+  const [selectedReservation, setSelectedReservation] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
+    const storedProfilePicture = localStorage.getItem("profilePicture");
+    const storedRole = localStorage.getItem("role");
+
     if (storedUsername) {
       setUsername(storedUsername);
-
-      const fetchReservations = async () => {
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
-          );
-          const data = await response.json();
-
-          if (data.success) {
-            setReservations(data.reservations);
-          } else {
-            setError("Failed to load your reservations.");
-          }
-        } catch (err) {
-          console.error("Error fetching reservations:", err);
-          setError("Failed to load your reservations.");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchReservations();
-    } else {
-      setError("No username found. Please log in.");
-      setLoading(false);
     }
-  }, [navigate]);
+
+    if (storedProfilePicture) {
+      setProfilePicture(storedProfilePicture);
+    }
+
+    if (storedRole) {
+      setRole(storedRole);
+    }
+
+    const fetchReservations = async () => {
+      if (!storedUsername) {
+        setError("No username found. Please log in.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
+        );
+        const data = await response.json();
+
+        if (data.success) {
+          setReservations(data.reservations);
+        } else {
+          setError("Failed to load your reservations.");
+        }
+      } catch (err) {
+        console.error("Error fetching reservations:", err);
+        setError("Failed to load your reservations.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, []);
 
   const cancelReservation = async (spotId, reservationDate) => {
     try {
@@ -73,7 +89,6 @@ const CancelParking = () => {
     }
   };
 
-  // פונקציה להצגת פרטי ההזמנה
   const viewReservationDetails = (reservation) => {
     setSelectedReservation(reservation);
   };
@@ -89,9 +104,12 @@ const CancelParking = () => {
   if (error) {
     return (
       <div className="cancel-page-container">
-        <header className="cancel-header">
+        {/* Header */}
+        <header className="homepage-header">
           <div className="logo">SPMS</div>
-          <h1>Cancel Parking Reservations</h1>
+          <nav>
+            <a href="#contact">Contact</a>
+          </nav>
         </header>
         <main className="cancel-main">
           <p className="error-message">{error}</p>
@@ -105,10 +123,14 @@ const CancelParking = () => {
 
   return (
     <div className="cancel-page-container">
-      <header className="cancel-header">
+      {/* Header */}
+      <header className="homepage-header">
         <div className="logo">SPMS</div>
-        <h1>Cancel Parking Reservations</h1>
+        <nav>
+          <a href="#contact">Contact</a>
+        </nav>
       </header>
+
       <main className="cancel-main">
         {reservations.length > 0 ? (
           <div className="reservations-list">
@@ -124,7 +146,9 @@ const CancelParking = () => {
               </thead>
               <tbody>
                 {reservations.map((reservation) => (
-                  <tr key={`${reservation.spot_id}-${reservation.reservation_date}`}>
+                  <tr
+                    key={`${reservation.spot_id}-${reservation.reservation_date}`}
+                  >
                     <td>{reservation.spot_code}</td>
                     <td>{reservation.reservation_date}</td>
                     <td>{reservation.status}</td>
@@ -178,10 +202,7 @@ const CancelParking = () => {
             <p>
               <strong>End Time:</strong> {selectedReservation.end_time}
             </p>
-            <button
-              className="close-modal-button"
-              onClick={closeDetailsModal}
-            >
+            <button className="close-modal-button" onClick={closeDetailsModal}>
               Close
             </button>
           </div>
