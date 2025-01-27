@@ -9,7 +9,10 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   // שימוש במשתנה סביבתי לכתובת ה-API
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_API_URL
+      : process.env.REACT_APP_API_PRODUCTION_URL;
 
   useEffect(() => {
     // שליפת הנתונים מ-LocalStorage
@@ -22,13 +25,14 @@ const HomePage = () => {
     }
 
     if (storedProfilePicture) {
-      setProfilePicture(storedProfilePicture);
+      // חיבור URL מלא לתמונה
+      setProfilePicture(`${API_URL}/static/images/${storedProfilePicture}`);
     }
 
     if (storedRole) {
       setRole(storedRole); // שמירת התפקיד ב-state
     }
-  }, []);
+  }, [API_URL]);
 
   if (!username) {
     return <div>Loading...</div>; // מסך טעינה
@@ -55,7 +59,7 @@ const HomePage = () => {
           <div className="profile">
             {profilePicture ? (
               <img
-                src={`${API_URL}${profilePicture}`} // שימוש בכתובת מהסביבה
+                src={profilePicture} // שימוש בכתובת המלאה
                 alt="Profile"
                 className="profile-icon"
               />
@@ -88,7 +92,6 @@ const HomePage = () => {
           >
             my Parkings
           </button>
-          {/* Reserve Parking Routine Button */}
         </section>
       </div>
 

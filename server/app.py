@@ -1,14 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
 import os  # לשימוש במשתני סביבה
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="client/build")  
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# התחברות ל-PostgreSQL
+# שרת קבצים סטטיים
+@app.route('/static/images/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('static/images', filename)
 try:
     db = psycopg2.connect(
         host=os.getenv("DB_HOST", "dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com"),
