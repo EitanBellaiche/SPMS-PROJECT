@@ -1,11 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
 import os  # לשימוש במשתני סביבה
 from datetime import datetime, timedelta 
 
-app = Flask(__name__)
+# הגדרת Flask
+app = Flask(__name__, static_folder="client/build")  
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # התחברות ל-PostgreSQL
@@ -23,7 +24,7 @@ except psycopg2.OperationalError as e:
     print(f"Database connection failed: {e}")
     exit(1)
 
-
+# API לדוגמה - Login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -52,6 +53,18 @@ def login():
         return jsonify({"success": False, "message": "An error occurred while processing your request."})
     finally:
         cursor.close()
+
+# טיפול בנתיבי React
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_react_app(path):
+    try:
+        if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+            return send_from_directory(app.static_folder, path)  # הגשת קבצים סטטיים
+        else:
+            return send_from_directory(app.static_folder, "index.html")  # הגשת index.html
+    except Exception as e:
+        return jsonify({"error": "File not found", "message": str(e)}), 404
 
 @app.route('/parking-spots', methods=['GET'])
 def get_parking_spots():
@@ -566,5 +579,5 @@ def reserve_future_parking():
     finally:
         cursor.close()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
