@@ -8,6 +8,9 @@ const HomePage = () => {
   const [role, setRole] = useState(""); // שמירת התפקיד
   const navigate = useNavigate();
 
+  // שימוש במשתנה סביבתי לכתובת ה-API
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     // שליפת הנתונים מ-LocalStorage
     const storedUsername = localStorage.getItem("username");
@@ -52,7 +55,7 @@ const HomePage = () => {
           <div className="profile">
             {profilePicture ? (
               <img
-                src={`http://localhost:5000${profilePicture}`}
+                src={`${API_URL}${profilePicture}`} // שימוש בכתובת מהסביבה
                 alt="Profile"
                 className="profile-icon"
               />
