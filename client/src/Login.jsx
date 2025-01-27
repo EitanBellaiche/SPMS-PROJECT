@@ -14,8 +14,8 @@ const Login = () => {
   // URL של ה-API מבוסס על סביבת העבודה
   const API_URL =
     process.env.NODE_ENV === "development"
-      ? process.env.REACT_APP_API_URL
-      : process.env.REACT_APP_API_PRODUCTION_URL;
+      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
+      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +33,13 @@ const Login = () => {
         },
         body: JSON.stringify(credentials),
       });
+
+      if (!response.ok) {
+        // אם השרת החזיר שגיאה
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || "An error occurred.");
+        return;
+      }
 
       const data = await response.json();
 
