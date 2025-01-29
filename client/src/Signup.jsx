@@ -10,13 +10,18 @@ const Signup = () => {
     username: "",
     password: "",
     building: "",
+    handicapParking: false,
+    electricVehicle: false,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // עדכון השדות בעת שינוי קלט
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -34,7 +39,7 @@ const Signup = () => {
   
       if (data.success) {
         alert("Registration successful!");
-        navigate("/"); // ניווט חזרה לדף הכניסה
+        navigate("/");
       } else {
         setErrorMessage(data.message || "Error: wrong details.");
       }
@@ -43,11 +48,9 @@ const Signup = () => {
       setErrorMessage("Error: Could not connect to the server.");
     }
   };
-  
 
   return (
     <div className="signup-page">
-      {/* Header */}
       <header className="header">
         <div className="logo">SPMS</div>
         <nav>
@@ -56,7 +59,6 @@ const Signup = () => {
         </nav>
       </header>
 
-      {/* Main Content */}
       <main className="signup-main">
         <div className="signup-container">
           <h1>Sign Up</h1>
@@ -93,7 +95,25 @@ const Signup = () => {
               onChange={handleChange}
               required
             />
-            {/* עוטפים את הכפתור ב-div */}
+            <div className="checkbox-container">
+              <label>
+                <input
+                  type="checkbox"
+                  name="is_disabled_user"
+                  checked={formData.is_disabled_user}
+                  onChange={(e) => setFormData({ ...formData, is_disabled_user: e.target.checked })}
+                />
+                Disabled parking
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="is_electric_car"
+                  checked={formData.is_electric_car}
+                  onChange={(e) => setFormData({ ...formData, is_electric_car: e.target.checked })}
+                /> Electric Vehicle
+              </label>
+            </div>
             <div className="button-container">
               <button type="submit" className="submit-button">Sign Up</button>
             </div>
@@ -102,7 +122,6 @@ const Signup = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         © 2024 Smart Parking Management System. All rights reserved.
       </footer>

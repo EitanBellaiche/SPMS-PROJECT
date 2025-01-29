@@ -407,50 +407,6 @@ def recommend_parking():
     finally:
         cursor.close()
 
-@app.route('/signup', methods=['POST', 'OPTIONS'])
-def signup():
-    """
-    API להרשמה - הכנסת משתמש חדש לבסיס הנתונים
-    """
-    if request.method == 'OPTIONS':
-        # מענה לבקשת OPTIONS
-        return jsonify({'status': 'OK'}), 200
-
-    data = request.json
-    id = data.get('id')
-    username = data.get('username')
-    password = data.get('password')
-    building = data.get('building')
-
-    if not id or not username or not password or not building:
-        return jsonify({"success": False, "message": "fill all"}), 400
-
-    try:
-        cursor = db.cursor()
-
-        # בדיקה אם המשתמש כבר קיים
-        check_query = "SELECT * FROM users WHERE username = %s OR id = %s"
-        cursor.execute(check_query, (username, id))
-        if cursor.fetchone():
-            return jsonify({"success": False, "message":  "user already exist"}), 409
-
-        # הוספת המשתמש החדש
-        insert_query = """
-            INSERT INTO users (id, username, password, building, role)
-            VALUES (%s, %s, %s, %s, 'user')
-        """
-        cursor.execute(insert_query, (id, username, password, building))
-        db.commit()
-
-        return jsonify({"success": True, "message": "your sing up sucssesfuly"})
-
-    except psycopg2.Error as e:
-        db.rollback()
-        print(f"Database error during signup: {e}")
-        return jsonify({"success": False, "message": "Error"}), 500
-    finally:
-        cursor.close()
-
 @app.route('/reserve-future-parking', methods=['POST'])
 def reserve_future_parking():
     """
@@ -566,6 +522,49 @@ def reserve_future_parking():
         db.rollback()
         return jsonify({"success": False, "error": "Unable to reserve future parking"}), 500
 
+    finally:
+        cursor.close()
+
+
+@app.route('/signup', methods=['POST', 'OPTIONS'])
+def signup():
+    """
+    API להרשמה - הכנסת משתמש חדש לבסיס הנתונים
+    """
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'OK'}), 200
+
+    data = request.json
+    id = data.get('id')
+    username = data.get('username')
+    password = data.get('password')
+    building = data.get('building')
+    is_electric_car = data.get('is_electric_car', False)  # ברירת מחדל False אם לא נשלח
+    is_disabled_user = data.get('is_disabled_user', False)  # ברירת מחדל False אם לא נשלח
+
+    if not id or not username or not password or not building:
+        return jsonify({"success": False, "message": "fill all"}), 400
+
+    try:
+        cursor = db.cursor()
+        # בדיקה אם המשתמש כבר קיים
+        check_query = "SELECT * FROM users WHERE username = %s OR id = %s"
+        cursor.execute(check_query, (username, id))
+        if cursor.fetchone():
+            return jsonify({"success": False, "message": "user already exists"}), 409
+
+        # הוספת המשתמש החדש עם הערכים החדשים
+        insert_query = """
+            INSERT INTO users (id, username, password, building, role, is_electric_car, is_disabled_user)
+            VALUES (%s, %s, %s, %s, 'user', %s, %s)
+        """
+        cursor.execute(insert_query, (id, username, password, building, is_electric_car, is_disabled_user))
+        db.commit()
+        return jsonify({"success": True, "message": "your sign up successfully"})
+    except psycopg2.Error as e:
+        db.rollback()
+        print(f"Database error during signup: {e}")
+        return jsonify({"success": False, "message": "Error"}), 500
     finally:
         cursor.close()
 
