@@ -24,14 +24,6 @@ const HomePage = () => {
       setUsername(storedUsername);
     }
 
-    if (storedProfilePicture) {
-      // חיבור URL מלא לתמונה
-      setProfilePicture(`${API_URL}/static/images/${storedProfilePicture}`);
-      console.log("Profile Picture URL:", profilePicture);
-
-
-    }
-
     if (storedRole) {
       setRole(storedRole); // שמירת התפקיד ב-state
     }
@@ -58,18 +50,6 @@ const HomePage = () => {
           <div className="greeting-text">
             <h2>Hello {username},</h2>
             <p>Welcome back to the system!</p>
-          </div>
-          <div className="profile">
-            {profilePicture ? (
-              <img
-                src={profilePicture} // שימוש בכתובת המלאה
-                alt="Profile"
-                className="profile-icon"
-              />
-            ) : (
-              <div className="profile-icon">No Image</div>
-            )}
-            <p>{username}</p>
           </div>
         </section>
 
