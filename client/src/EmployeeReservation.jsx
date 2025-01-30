@@ -9,6 +9,11 @@ const EmployeeReservation = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
 
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
+      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
+
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "default_user";
     setUsername(storedUsername);
@@ -48,7 +53,7 @@ const EmployeeReservation = () => {
       setLoading(true);
 
       // שליחת בקשה להזמנת חנייה חוזרת
-      const response = await fetch("http://127.0.0.1:5000/reserve-future-parking", {
+      const response = await fetch(`${API_URL}/reserve-future-parking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -65,9 +70,8 @@ const EmployeeReservation = () => {
       if (data.success) {
         // ניסיון לשלוף חנייה מומלצת
         const recommendedResponse = await fetch(
-          `http://127.0.0.1:5000/recommend-parking?username=${username}&reservation_date=${new Date().toISOString().split("T")[0]}`
+          `${API_URL}/recommend-parking?username=${username}&reservation_date=${new Date().toISOString().split("T")[0]}`
         );
-
         const recommendedData = await recommendedResponse.json();
 
         if (recommendedData.success) {

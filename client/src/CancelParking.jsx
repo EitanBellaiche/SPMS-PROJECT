@@ -9,6 +9,12 @@ const CancelParking = () => {
   const [error, setError] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const navigate = useNavigate();
+  
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
+      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
+
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -18,7 +24,7 @@ const CancelParking = () => {
       const fetchReservations = async () => {
         try {
           const response = await fetch(
-            `http://127.0.0.1:5000/user-reservations?username=${storedUsername}`
+            `${API_URL}/user-reservations?username=${storedUsername}`
           );
           const data = await response.json();
 
@@ -44,7 +50,7 @@ const CancelParking = () => {
 
   const cancelReservation = async (spotId, reservationDate) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/cancel-reservation", {
+      const response = await fetch(`${API_URL}/cancel-reservation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
