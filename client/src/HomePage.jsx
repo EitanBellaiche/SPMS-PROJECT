@@ -27,6 +27,9 @@ const HomePage = () => {
     if (storedProfilePicture) {
       // חיבור URL מלא לתמונה
       setProfilePicture(`${API_URL}/static/images/${storedProfilePicture}`);
+      console.log("Profile Picture URL:", profilePicture);
+
+
     }
 
     if (storedRole) {
