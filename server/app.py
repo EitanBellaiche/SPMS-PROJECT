@@ -19,6 +19,13 @@ def serve_image(filename):
     
     print(f"✅ Serving image from: {full_path}")
     return send_from_directory(directory, filename)
+@app.route('/list-images')
+def list_images():
+    directory = os.path.join(app.root_path, "static/images")
+    if not os.path.exists(directory):
+        return jsonify({"error": "Directory not found"}), 404
+    files = os.listdir(directory)
+    return jsonify({"files": files})
 
 try:
     db = psycopg2.connect(
