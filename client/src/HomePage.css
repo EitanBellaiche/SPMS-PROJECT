@@ -13,7 +13,6 @@ body {
   align-items: center;
   background-color: #1565c0;
   color: white;
-  padding: 10px 20px;
 }
 
 .logo {
@@ -25,6 +24,8 @@ nav a {
   text-decoration: none;
   color: white;
   font-size: 1rem;
+  display:flex;
+  text-align: right;
 }
 
 /* Greeting Section */
@@ -35,7 +36,9 @@ nav a {
   background-color: #e3f2fd;
   padding: 20px;
   border-radius: 10px;
-  margin: 20px;
+  margin-top: 60px;
+  margin-left: 20px;
+  
 }
 
 .greeting-text h2 {
@@ -49,42 +52,28 @@ nav a {
   font-size: 1.2rem;
 }
 
-.profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profile-icon {
-  width: 50px;
-  height: 50px;
-  background-color: #d1d1d1;
-  border-radius: 50%;
-  object-fit: cover; /* Ensure the image fits nicely */
-  margin-bottom: 5px;
-}
-
-/* Buttons Section */
 /* Buttons Section */
 .action-buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center; /* הוספה */
-  gap: 15px;
+  gap: 45px;
   margin: 0; /* אפסנו את השוליים */
+  margin-top: 30px;
   height: 60vh; /* התאמת הגובה */
 }
 
 .action-button {
     background-color: #42a5f5;
     color: white;
-    font-size: 1rem;
+    font-size: 1.5rem;
     padding: 15px 30px;
     border: none;
     border-radius: 10px;
-    width: 40%; /* היה 80%, צומצם */
-    max-width: 300px; /* מקסימום רוחב */
+    width: 100%; /* היה 80%, צומצם */
+    height: 15%;
+    max-width: 350px; /* מקסימום רוחב */
     text-align: center;
     position: relative;
     cursor: pointer;
