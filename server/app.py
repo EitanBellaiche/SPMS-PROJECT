@@ -8,10 +8,12 @@ from datetime import datetime, timedelta
 app = Flask(__name__, static_folder="client/build")  
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# שרת קבצים סטטיים
 @app.route('/static/images/<path:filename>')
 def serve_image(filename):
-    return send_from_directory('static/images', filename)
+    directory = os.path.join(app.root_path, "static/images")
+    print(f"Serving image from: {directory}/{filename}")  # בדיקה אם הבקשה מגיעה
+    return send_from_directory(directory, filename)
+
 try:
     db = psycopg2.connect(
         host=os.getenv("DB_HOST", "dpg-ctspgphu0jms73bck45g-a.frankfurt-postgres.render.com"),
