@@ -4,7 +4,6 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [username, setUsername] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
   const [role, setRole] = useState(""); // שמירת התפקיד
   const navigate = useNavigate();
 
@@ -17,7 +16,6 @@ const HomePage = () => {
   useEffect(() => {
     // שליפת הנתונים מ-LocalStorage
     const storedUsername = localStorage.getItem("username");
-    const storedProfilePicture = localStorage.getItem("profilePicture");
     const storedRole = localStorage.getItem("role");
 
     if (storedUsername) {
