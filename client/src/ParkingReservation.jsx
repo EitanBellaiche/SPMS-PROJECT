@@ -9,7 +9,7 @@ const ParkingSpotRow = ({ spot, onReserve }) => {
       ? "recommended-spot"
       : "available-spot"
   }`;
-
+  
   return (
     <tr key={spot.id} className={rowClass}>
       <td>{spot.spot_code}</td>
@@ -63,6 +63,12 @@ const ParkingReservation = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
 
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
+      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
+
+
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "default_user";
     setUsername(storedUsername);
@@ -94,7 +100,7 @@ const ParkingReservation = () => {
       setLoading(true);
 
       const response = await fetch(
-        `http://127.0.0.1:5000/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
+       `${API_URL}/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
       );
       const data = await response.json();
 
@@ -102,7 +108,7 @@ const ParkingReservation = () => {
         setParkingSpots(data.parkingSpots);
 
         const recommendResponse = await fetch(
-          `http://127.0.0.1:5000/recommend-parking?username=${username}&reservation_date=${selectedDate}`
+          `${API_URL}/recommend-parking?username=${username}&reservation_date=${selectedDate}`
         );
         const recommendData = await recommendResponse.json();
 
@@ -134,7 +140,7 @@ const ParkingReservation = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/reserve-spot-date", {
+      const response = await fetch(`${API_URL}/reserve-spot-date`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
