@@ -11,7 +11,13 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/static/images/<path:filename>')
 def serve_image(filename):
     directory = os.path.join(app.root_path, "static/images")
-    print(f"Serving image from: {directory}/{filename}")  # בדיקה אם הבקשה מגיעה
+    full_path = os.path.join(directory, filename)
+
+    if not os.path.exists(full_path):
+        print(f"⚠️ File not found: {full_path}")  # בדיקה האם השרת רואה את הקובץ
+        return jsonify({"error": "File not found"}), 404
+    
+    print(f"✅ Serving image from: {full_path}")
     return send_from_directory(directory, filename)
 
 try:
