@@ -9,12 +9,11 @@ const CancelParking = () => {
   const [error, setError] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const navigate = useNavigate();
-  
+
   const API_URL =
     process.env.NODE_ENV === "development"
       ? process.env.REACT_APP_API_URL || "http://localhost:5000"
       : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
-
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -27,6 +26,8 @@ const CancelParking = () => {
             `${API_URL}/user-reservations?username=${storedUsername}`
           );
           const data = await response.json();
+
+          console.log("Reservations Data:", data); // ✅ בדיקה האם הנתונים מגיעים
 
           if (data.success) {
             setReservations(data.reservations);
@@ -46,7 +47,7 @@ const CancelParking = () => {
       setError("No username found. Please log in.");
       setLoading(false);
     }
-  }, [navigate]);
+  }, [API_URL]);
 
   const cancelReservation = async (spotId, reservationDate) => {
     try {
@@ -80,6 +81,12 @@ const CancelParking = () => {
   };
 
   const viewReservationDetails = (reservation) => {
+    console.log("Selected Reservation:", reservation);
+
+    if (!reservation.latitude || !reservation.longitude) {
+      alert("Location data is missing. Please check the database or API.");
+      return;
+    }
     setSelectedReservation(reservation);
   };
 
@@ -169,46 +176,37 @@ const CancelParking = () => {
         )}
       </main>
 
+      {/* 🔹 חלון עם פרטי החנייה וכפתור ניווט */}
       {selectedReservation && (
         <div className="details-modal">
           <div className="modal-content">
             <h2>Reservation Details</h2>
-            <div className="parking-details">
-              <div className="detail-item">
-                <span className="detail-icon">📍</span>
-                <span>
-                  <strong>Spot Code:</strong> {selectedReservation.spot_code}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-icon">📅</span>
-                <span>
-                  <strong>Date:</strong> {selectedReservation.reservation_date}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-icon">⏰</span>
-                <span>
-                  <strong>Start Time:</strong> {selectedReservation.start_time}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-icon">⏱️</span>
-                <span>
-                  <strong>End Time:</strong> {selectedReservation.end_time}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-icon">📋</span>
-                <span>
-                  <strong>Status:</strong> {selectedReservation.status}
-                </span>
-              </div>
-            </div>
-            <button
-              className="close-modal-button"
-              onClick={closeDetailsModal}
-            >
+            <p><strong>Spot Code:</strong> {selectedReservation.spot_code}</p>
+            <p><strong>Date:</strong> {selectedReservation.reservation_date}</p>
+            <p><strong>Start Time:</strong> {selectedReservation.start_time}</p>
+            <p><strong>End Time:</strong> {selectedReservation.end_time}</p>
+            
+            {/* 🔹 הצגת נתוני מיקום */}
+            {selectedReservation.latitude && selectedReservation.longitude ? (
+              <>
+                <p><strong>Location:</strong> {selectedReservation.latitude}, {selectedReservation.longitude}</p>
+                <button
+                  className="navigate-button"
+                  onClick={() =>
+                    window.open(
+                      `https://www.google.com/maps/dir/?api=1&destination=${selectedReservation.latitude},${selectedReservation.longitude}&travelmode=driving`,
+                      "_blank"
+                    )
+                  }
+                >
+                  🚗 Navigate
+                </button>
+              </>
+            ) : (
+              <p className="error-message">Location data is not available for this parking spot.</p>
+            )}
+
+            <button className="close-modal-button" onClick={closeDetailsModal}>
               Close
             </button>
           </div>

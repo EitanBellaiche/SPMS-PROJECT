@@ -3,29 +3,10 @@ from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
 import os  # לשימוש במשתני סביבה
-from datetime import datetime, timedelta
+from datetime import datetime, date, time, timedelta
 
 app = Flask(__name__, static_folder="client/build")  
 CORS(app, resources={r"/*": {"origins": "*"}})
-
-@app.route('/static/images/<path:filename>')
-def serve_image(filename):
-    directory = os.path.join(app.root_path, "static/images")
-    full_path = os.path.join(directory, filename)
-
-    if not os.path.exists(full_path):
-        print(f"⚠️ File not found: {full_path}")  # בדיקה האם השרת רואה את הקובץ
-        return jsonify({"error": "File not found"}), 404
-    
-    print(f"✅ Serving image from: {full_path}")
-    return send_from_directory(directory, filename)
-@app.route('/list-images')
-def list_images():
-    directory = os.path.join(app.root_path, "static/images")
-    if not os.path.exists(directory):
-        return jsonify({"error": "Directory not found"}), 404
-    files = os.listdir(directory)
-    return jsonify({"files": files})
 
 try:
     db = psycopg2.connect(
@@ -267,47 +248,55 @@ def reserve_spot_date():
         return jsonify({"success": False, "error": "Unable to reserve spot"}), 500
     finally:
         cursor.close()
-
-
 @app.route('/user-reservations', methods=['GET'])
 def get_user_reservations():
-    """
-    API לשליפת כל ההזמנות של המשתמש כולל מידע על spot_code ושעות
-    """
     username = request.args.get("username")
 
     if not username:
         return jsonify({"success": False, "message": "Username is required"}), 400
 
+    cursor = None  # הוספת משתנה לפני שימוש בו
+
     try:
         cursor = db.cursor()
         query = """
-            SELECT ps.spot_code, r.reservation_date, r.start_time, r.end_time, r.status
+            SELECT r.id, r.parking_spot_id, ps.spot_code, r.reservation_date, 
+                   r.start_time, r.end_time, ps.latitude, ps.longitude, r.status
             FROM reservations r
             JOIN parking_spots ps ON r.parking_spot_id = ps.id
             WHERE r.username = %s
-            ORDER BY r.reservation_date ASC, r.start_time ASC
+            ORDER BY r.reservation_date DESC
         """
         cursor.execute(query, (username,))
         rows = cursor.fetchall()
 
+        print("Fetched reservations:", rows)  
+
         reservations = [
             {
-                "spot_code": row[0],
-                "reservation_date": row[1].strftime('%Y-%m-%d'),
-                "start_time": row[2].strftime('%H:%M'),
-                "end_time": row[3].strftime('%H:%M'),
-                "status": row[4],
+                "id": row[0],
+                "spot_id": row[1],
+                "spot_code": row[2],
+                "reservation_date": row[3].strftime("%Y-%m-%d") if isinstance(row[3], date) else row[3],  
+                "start_time": row[4].strftime("%H:%M:%S") if isinstance(row[4], time) else row[4],  
+                "end_time": row[5].strftime("%H:%M:%S") if isinstance(row[5], time) else row[5],  
+                "latitude": row[6],
+                "longitude": row[7],
+                "status": row[8]
             }
             for row in rows
         ]
 
         return jsonify({"success": True, "reservations": reservations})
+
     except Exception as e:
-        print("Error fetching user reservations:", e)
-        return jsonify({"success": False, "error": "Unable to fetch reservations"}), 500
+        print(f"Error fetching reservations: {e}") 
+        return jsonify({"success": False, "error": str(e)}), 500
+
     finally:
-        cursor.close()
+        if cursor:  # בדיקה שה-cursor לא ריק לפני סגירתו
+            cursor.close()
+
 
 @app.route('/parking-spots-by-date', methods=['GET'])
 def get_parking_spots_by_date():
