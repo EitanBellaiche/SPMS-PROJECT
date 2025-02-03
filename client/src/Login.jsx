@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import "./Login.css";
-import logo from "./assets/logo.png"; // Importing the logo from src/assets
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -10,12 +11,6 @@ const Login = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-
-  // URL של ה-API מבוסס על סביבת העבודה
-  const API_URL =
-    process.env.NODE_ENV === "development"
-      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
-      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +21,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,33 +29,23 @@ const Login = () => {
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) {
-        // אם השרת החזיר שגיאה
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || "An error occurred.");
-        return;
-      }
-
       const data = await response.json();
 
       if (data.success) {
-        // Save username, profile picture, and role to localStorage
+        // שמירת שם המשתמש ותמונת הפרופיל ב-LocalStorage
         localStorage.setItem("username", data.username);
         localStorage.setItem("profilePicture", data.profile_picture);
-        localStorage.setItem("role", data.role); // Save role to localStorage
 
-        // Navigate based on role
+        // ניתוב לפי תפקיד
         if (data.role === "admin") {
-          navigate("/admin");
-        } else if (data.role === "guest") {
-          navigate("/home");
-        } else if (data.role === "employee") {
-          navigate("/home");
+          navigate("/admin"); // ניתוב לעמוד admin
+        } else if (data.role === "client") {
+          navigate("/home"); // ניתוב לעמוד הבית
         } else {
           setErrorMessage("Role not recognized.");
         }
       } else {
-        setErrorMessage(data.message);
+        setErrorMessage(data.message); // הצגת שגיאה למשתמש
       }
     } catch (error) {
       console.error("Error:", error);
@@ -71,17 +56,14 @@ const Login = () => {
   return (
     <div className="login-page">
       <header className="homepage-header">
-        <div className="logo">
-          <img src={logo} alt="SPMS Logo" className="logo-image" />
-          SPMS
-        </div>
+        <div className="logo">SPMS</div>
         <nav className="navbar">
           <ul>
             <li>
-              <a href="/About us">About us</a>
+              <a href="#contact-footer">Contact</a>
             </li>
             <li>
-              <a href="/Sign up">Sign up</a>
+              <Link to = "/signup">Sign Up</Link>
             </li>
           </ul>
         </nav>
@@ -89,6 +71,7 @@ const Login = () => {
 
       <main className="login-main">
         <div className="login-container">
+          <h1>Login</h1>
           <form onSubmit={handleSubmit} className="login-form">
             <input
               type="text"
