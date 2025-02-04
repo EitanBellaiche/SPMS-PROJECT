@@ -1,161 +1,210 @@
-/* General Styles */
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
-    color: #333;
-}
-
-/* Header */
 .admin-header {
-    background-color: #1565c0; /* Blue header */
+    width: 100%;
+    background-color: #1565c0; /* צבע רקע תואם */
     color: white;
-    padding: 20px;
-    text-align: center;
-    width: 100%; /* Full width */
-    box-sizing: border-box;
+    padding: 10px 20px;
+    text-align: left;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.logo {
-    font-size: 1.8rem;
+.admin-header .logo {
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
-.navbar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.admin-container {
     display: flex;
-    gap: 15px;
+    flex-direction: column; /* גורם לתפריט להיות מתחת להאדר */
 }
 
-.navbar ul li a {
+.sidebar {
+    background-color: #0d47a1;
     color: white;
-    text-decoration: none;
+    padding: 15px;
+    width: 100%;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* גורם לפריטים להיות אחד מתחת לשני */
+    gap: 10px; /* ריווח בין הפריטים */
+}
+
+.admin-header {
+    width: 100%;
+    background-color: #1565c0; /* צבע רקע */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* מפזר את האלמנטים */
+    height: 60px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex: 1;
+    text-align: left; /* מיישר את הלוגו לשמאל */
+}
+
+.header-title {
+    flex: 2;
+    text-align: center; /* ממקם את הכותרת באמצע */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.welcome-message {
+    flex: 1;
+    text-align: right; /* מיישר את הודעת המשתמש לימין */
+    font-size: 0.1rem;
+    font-weight: normal;
+   
+}
+
+.sidebar ul li {
+    cursor: pointer;
     font-size: 1rem;
-    transition: color 0.3s ease;
+    padding: 10px 15px;
+    transition: background-color 0.3s;
 }
 
-.navbar ul li a.active {
-    font-weight: bold;
-    border-bottom: 2px solid white;
+.sidebar ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.navbar ul li a:hover {
-    color: #90caf9;
+.admin-content {
+    padding: 20px;
+}
+.admin-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px); /* מתאים את הגובה לפי גובה ההאדר */
 }
 
-/* Success Message */
-.success-message {
-    background-color: #43a047;
+.sidebar {
+    width: 250px;
+    background-color: #0d47a1;
     color: white;
+    padding: 15px;
+    height: 100%;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    cursor: pointer;
+    font-size: 1rem;
     padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
 }
 
-/* Main Section */
-.admin-main {
-    text-align: center;
+.sidebar ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-content {
+    flex-grow: 1;
     padding: 20px;
+    background: linear-gradient(135deg, #e3f2fd, #90caf9);
 }
-
-.parking-management {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.parking-management h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #1565c0;
-}
-
-/* Parking Table */
-.parking-table {
+.users-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin-top: 20px;
+    background: white; /* רקע לבן כמו בטבלת החניות */
+    border-radius: 8px; /* פינות מעוגלות */
+    overflow: hidden; /* שומר על העיצוב */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* צל עדין */
 }
 
-.parking-table th, 
-.parking-table td {
+.users-table th, .users-table td {
     border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
+    padding: 12px; /* קצת יותר ריווח לשיפור קריאות */
+    text-align: left;
 }
 
-.parking-table th {
-    background-color: #1565c0;
-    color: white;
+.users-table th {
+    background-color: #1565c0; /* צבע רקע של טור הכותרות */
+    color: white; /* צבע טקסט לבן */
     font-weight: bold;
+    text-transform: uppercase;
 }
 
-.parking-table td.available {
-    color: #43a047; /* Green for available */
-    font-weight: bold;
-}
-
-.parking-table td.occupied {
-    color: #e53935; /* Red for occupied */
-    font-weight: bold;
-}
-
-.parking-table td {
+.users-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-/* Toggle Button */
-.toggle-button {
-    padding: 8px 15px;
+.users-table tr:hover {
+    background-color: #e3f2fd; /* צבע רקע של השורה כשעוברים מעליה */
+    transition: background-color 0.3s;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 10px;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
     cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    margin-inline: 5px; 
+}
+
+.edit-btn {
+    background:grey;
     color: white;
-    transition: background-color 0.3s ease, transform 0.2s;
 }
 
-.toggle-button.available-btn {
-    background-color: #e53935; /* Red */
+.edit-btn:hover {
+    background: #1565c0;
 }
 
-.toggle-button.available-btn:hover {
-    background-color: #d32f2f;
+.delete-btn {
+    background: #d32f2f;
+    color: white;
 }
 
-.toggle-button.occupied-btn {
-    background-color: #43a047; /* Green */
+.delete-btn:hover {
+    background: #b71c1c;
 }
-
-.toggle-button.occupied-btn:hover {
-    background-color: #388e3c;
-}
-
-.toggle-button:hover {
-    transform: scale(1.05);
-}
-
-/* Welcome Message */
-.welcome-message {
-    font-size: 2rem;
-    color: #ffeb3b; /* Yellow */
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    margin-top: 10px;
-    animation: fadeIn 1s ease-in;
-}
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-btn {
+    padding: 8px;
+    background: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .parking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .parking-table th, .parking-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
 
 @keyframes fadeIn {
     from {
