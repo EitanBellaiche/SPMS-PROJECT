@@ -571,6 +571,184 @@ def signup():
         return jsonify({"success": False, "message": "Error"}), 500
     finally:
         cursor.close()
+        
+        @app.route('/users', methods=['GET'])
+        def get_users():
+            """
+            API להחזרת כל המשתמשים מה־DB
+            """
+            try:
+                cursor = db.cursor()
+                query = """
+                    SELECT id, username, password, role, building, is_disabled_user, is_electric_car
+                    FROM users
+                """
+                cursor.execute(query)
+                rows = cursor.fetchall()
+
+                # עיבוד הנתונים לפורמט JSON
+                users = [
+                    {
+                        "id": row[0],
+                        "username": row[1],
+                        "password": row[2],  # **שיקול אבטחה: מומלץ לא להחזיר את הסיסמאות!**
+                        "role": row[3],
+                        "building": row[4],
+                        "disabled": row[5],
+                        "electric_car": row[6]
+                    }
+                    for row in rows
+                ]
+
+                return jsonify({"success": True, "users": users})
+            except Exception as e:
+                print("Error fetching users:", e)
+                return jsonify({"success": False, "error": "Unable to fetch users"}), 500
+            finally:
+                cursor.close()
+
+    @app.route('/delete-user/<int:user_id>', methods=['DELETE'])
+    def delete_user(user_id):
+        try:
+            cursor = db.cursor()
+            query = "DELETE FROM users WHERE id = %s"
+            cursor.execute(query, (user_id,))
+            db.commit()
+            return jsonify({"success": True, "message": "User deleted successfully"})
+        except Exception as e:
+            print("Error deleting user:", e)
+            db.rollback()
+            return jsonify({"success": False, "message": "Failed to delete user"}), 500
+        finally:
+            cursor.close()
+
+    @app.route('/update-user/<int:user_id>', methods=['PUT'])
+    def update_user(user_id):
+        data = request.json
+        username = data.get("username")
+        role = data.get("role")
+        building = data.get("building")
+        disabled = data.get("disabled")
+        electric_car = data.get("electric_car")
+
+        try:
+            cursor = db.cursor()
+            query = """
+                UPDATE users
+                SET username = %s, role = %s, building = %s, is_disabled_user = %s, is_electric_car = %s
+                WHERE id = %s
+            """
+            cursor.execute(query, (username, role, building, disabled, electric_car, user_id))
+            db.commit()
+            return jsonify({"success": True, "message": "User updated successfully"})
+        except Exception as e:
+            print("Error updating user:", e)
+            db.rollback()
+            return jsonify({"success": False, "message": "Failed to update user"}), 500
+        finally:
+            cursor.close()
+    @app.route('/parking-spots', methods=['GET'])
+    def retrieve_parking_spots():
+        reservation_date = request.args.get("reservation_date")
+        start_time = request.args.get("start_time")
+        end_time = request.args.get("end_time")
+
+        if not reservation_date or not start_time or not end_time:
+            return jsonify({"success": False, "message": "All fields are required"}), 400
+
+        try:
+            cursor = db.cursor()
+            query = """
+                SELECT ps.id, ps.spot_code, ps.level,
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM reservations r
+                            WHERE r.parking_spot_id = ps.id
+                            AND r.reservation_date = %s
+                            AND (r.start_time < %s AND r.end_time > %s)
+                        ) THEN 'Occupied' 
+                        ELSE 'Available' 
+                    END AS status,
+                    (NOT EXISTS (
+                        SELECT 1 FROM reservations r
+                        WHERE r.parking_spot_id = ps.id
+                        AND r.reservation_date = %s
+                        AND (r.start_time < %s AND r.end_time > %s)
+                    )) AS availability,
+                    ps.is_electric,
+                    ps.is_disabled,
+                    ps.latitude,
+                    ps.longitude
+                FROM parking_spots ps
+                ORDER BY ps.id ASC
+            """
+            cursor.execute(query, (reservation_date, end_time, start_time, reservation_date, end_time, start_time))
+            rows = cursor.fetchall()
+
+            parking_spots = [
+                {
+                    "id": row[0],
+                    "spot_code": row[1],
+                    "level": row[2],
+                    "status": row[3],
+                    "availability": row[4],
+                    "is_electric": row[5],
+                    "is_disabled": row[6],
+                    "latitude": row[7],
+                    "longitude": row[8],
+                }
+                for row in rows
+            ]
+            return jsonify({"success": True, "parkingSpots": parking_spots})
+        except Exception as e:
+            print("Error fetching parking spots:", e)
+            return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
+        finally:
+            cursor.close()
+
+    @app.route('/all-parking-spots', methods=['GET'])
+    def get_all_parking_spots():
+        try:
+            cursor = db.cursor()
+            query = """
+                SELECT ps.id, ps.spot_code, ps.level,
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM reservations r
+                            WHERE r.parking_spot_id = ps.id
+                        ) THEN 'Occupied'
+                        ELSE 'Available'
+                    END AS status,
+                    NOT EXISTS (
+                        SELECT 1 FROM reservations r
+                        WHERE r.parking_spot_id = ps.id
+                    ) AS availability,
+                    ps.is_electric, ps.is_disabled
+                FROM parking_spots ps
+                ORDER BY ps.id ASC
+            """
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            parking_spots = [
+                {
+                    "id": row[0],
+                    "spot_code": row[1],
+                    "level": row[2],
+                    "status": row[3],
+                    "availability": row[4],
+                    "is_electric": row[5],
+                    "is_disabled": row[6],
+                }
+                for row in rows
+            ]
+            return jsonify({"success": True, "parkingSpots": parking_spots})
+        except Exception as e:
+            print("Error fetching all parking spots:", e)
+            return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
+        finally:
+            cursor.close()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
