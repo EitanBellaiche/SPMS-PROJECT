@@ -560,7 +560,7 @@ def signup():
         # הוספת המשתמש החדש עם הערכים החדשים
         insert_query = """
             INSERT INTO users (id, username, password, building, role, is_electric_car, is_disabled_user)
-            VALUES (%s, %s, %s, %s, 'user', %s, %s)
+            VALUES (%s, %s, %s, %s, 'guest', %s, %s)
         """
         cursor.execute(insert_query, (id, username, password, building, is_electric_car, is_disabled_user))
         db.commit()
