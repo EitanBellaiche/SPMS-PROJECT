@@ -118,7 +118,7 @@ const CancelParking = () => {
   return (
     <div className="cancel-page-container">
       <header className="homepage-header">
-        <button className="spms-button" onClick={() => navigate("/")}>
+        <button className="spms-button" onClick={() => navigate("/home")}>
           SPMS
         </button>
         <h1 className="header-title">Cancel Parking Reservations</h1>
