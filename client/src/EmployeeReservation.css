@@ -1,0 +1,240 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
+    color: #333;
+}
+
+/* Header */
+.reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1565c0;
+    color: white;
+    padding: 10px 20px;
+    height: 30px;
+      
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Navbar */
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: #90caf9;
+}
+
+
+/* Success Message */
+.success-message {
+    background-color: #43a047;
+    color: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Section */
+.reservation-main {
+    text-align: center;
+    padding: 20px;
+}
+
+.parking-reservation {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.parking-reservation h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #1565c0;
+}
+
+/* Parking Table */
+.parking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.parking-table th, 
+.parking-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.parking-table th {
+    background-color: #1565c0;
+    color: white;
+    font-weight: bold;
+}
+
+.parking-table td.available {
+    color: #43a047; /* Green for available */
+    font-weight: bold;
+}
+
+.parking-table td.occupied {
+    color: #e53935; /* Red for occupied */
+    font-weight: bold;
+}
+
+.parking-table td {
+    background-color: #f9f9f9;
+}
+
+/* Reserve Button */
+.reserve-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s;
+    background-color: #43a047; /* Green */
+}
+
+.reserve-button:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+/* Welcome Message */
+.welcome-message {
+    font-size: 2rem;
+    color: white; /* Yellow */
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-top: 10px;
+    animation: fadeIn 1s ease-in;
+}
+.button-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* עיצוב לעיגול עם האות L */
+.profile-icon-letter {
+    width: 50px;
+    height: 50px;
+    background-color: #f9f9f9; /* צבע רקע כחול */
+    color: white; /* צבע טקסט לבן */
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50%; /* הפיכת הצורה לעיגול */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase; /* אות גדולה */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל עדין */
+  }
+  
+  
+/* מבנה כללי של הדף */
+.reservation-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* גובה מלא של הדף */
+}
+
+/* התוכן המרכזי יתפוס את כל המקום הפנוי */
+.reservation-main {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+}
+
+/* הפוטר נשאר בתחתית */
+.footer {
+    background-color: #1565c0;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+  
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* עיצוב שורה של חניה מומלצת */
+.recommended-spot {
+    background-color: #f0f8ff; /* רקע כחול בהיר */
+    border-left: 5px solid #1e90ff; /* מסגרת כחולה */
+    position: relative;
+  }
+  
+  /* עיצוב לתווית Recommended */
+  .recommended-badge {
+    background-color: #1e90ff; /* רקע כחול */
+    color: white; /* טקסט לבן */
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 12px; /* פינות מעוגלות */
+    position: absolute;
+    top: 50%;
+    right: -25px; /* ממוקם מימין */
+    transform: translateY(-50%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל */
+  }
+  .time-picker-container {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+    align-items: center;
+  }
+  
+  .time-picker-container label {
+    font-weight: bold;
+  }
+  
+  .time-picker-container input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
