@@ -10,15 +10,15 @@
 /* Match HomePage header */
 .reservation-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #1565c0; /* HomePage header color */
-  color: white;
+  align-items: center; /* Vertically center items */
+  justify-content: space-between; /* Space out the logo and navigation */
   padding: 1rem 2rem;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* HomePage shadow */
+  background-color: #1565c0; /* Header background */
+  color: white; /* Text color */
+  border-radius: 10px; /* Slightly rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
 }
+
 
 .reservation-header h1 {
   margin: 0;
@@ -105,9 +105,10 @@
   background-color: #e3f2fd; /* Light blue like HomePage greeting section */
 }
 
+
 .reserve-button {
   background-color: #42a5f5 !important; /* Force HomePage button color */
-  color: white !important;
+  color: rgb(0, 0, 0) !important;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -162,7 +163,7 @@
 /* Ensure content is above the overlay */
 .reservation-header,
 .reservation-main {
-  color: #ffffff;
+  color: #000000;
   position: relative;
   z-index: 2;
   font-size: 1.2rem;
@@ -197,6 +198,24 @@
   align-items: center; /* Center label content */
   text-align: center; /* Center text */
 }
+.spms-button {
+  background-color: transparent; /* No background to blend with header */
+  color: white; /* Same color as Log Out button */
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem; /* Same padding as Log Out */
+  border: none; /* Remove border */
+  border-radius: 8px; /* Keep consistent with other buttons */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.spms-button:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+
 
 .date-time-picker input,
 .date-time-picker select {

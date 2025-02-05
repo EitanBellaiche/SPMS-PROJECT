@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./EmployeeReservation.css";
+
+
 
 const EmployeeReservation = () => {
   const [selectedDays, setSelectedDays] = useState([]);
@@ -8,6 +11,7 @@ const EmployeeReservation = () => {
   const [reservationDuration, setReservationDuration] = useState(1); // שבועות
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   const API_URL =
     process.env.NODE_ENV === "development"
@@ -95,8 +99,13 @@ const EmployeeReservation = () => {
   return (
     <div className="employee-reservation-container">
       <header className="reservation-header">
-        <h1>Employee Parking Reservation</h1>
-        {username && <p>Welcome, {username}</p>}
+        <button className="spms-button" onClick={() => navigate("/home")}>
+          SPMS
+        </button>
+        <h1 className="header-title">Employee Parking Reservation</h1>
+        <button className="logout-button" onClick={() => navigate("/")}>
+          Log Out
+        </button>
       </header>
 
       <main className="reservation-main">
@@ -111,9 +120,8 @@ const EmployeeReservation = () => {
                 (day) => (
                   <button
                     key={day}
-                    className={`day-button ${
-                      selectedDays.includes(day) ? "selected" : ""
-                    }`}
+                    className={`day-button ${selectedDays.includes(day) ? "selected" : ""
+                      }`}
                     onClick={() => toggleDaySelection(day)}
                   >
                     {day}

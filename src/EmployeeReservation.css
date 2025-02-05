@@ -28,6 +28,39 @@ body {
     padding: 20px;
     flex: 1;
 }
+.reservation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1565c0;
+    color: white;
+    padding: 10px 20px;
+    height: 50px;
+}
+
+/* Center align the title */
+.header-title {
+    flex-grow: 1; /* Allow title to take available space */
+    text-align: center; /* Center text */
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* SPMS button styling */
+.spms-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.spms-button:hover {
+    opacity: 0.8; /* Subtle hover effect */
+}
+
 
 .employee-reservation-container {
     display: flex;

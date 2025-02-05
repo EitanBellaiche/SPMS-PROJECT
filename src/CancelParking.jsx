@@ -118,7 +118,10 @@ const CancelParking = () => {
   return (
     <div className="cancel-page-container">
       <header className="homepage-header">
-        <div className="logo">SPMS</div>
+        <button className="spms-button" onClick={() => navigate("/")}>
+          SPMS
+        </button>
+        <h1 className="header-title">Cancel Parking Reservations</h1>
         <nav>
           <a href="#contact">Contact</a>
         </nav>
@@ -185,7 +188,7 @@ const CancelParking = () => {
             <p><strong>Date:</strong> {selectedReservation.reservation_date}</p>
             <p><strong>Start Time:</strong> {selectedReservation.start_time}</p>
             <p><strong>End Time:</strong> {selectedReservation.end_time}</p>
-            
+
             {/* 🔹 הצגת נתוני מיקום */}
             {selectedReservation.latitude && selectedReservation.longitude ? (
               <>
