@@ -3,12 +3,13 @@ import "./ParkingReservation.css";
 import { useNavigate } from "react-router-dom";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = `spot-row ${spot.status === "Occupied"
+  const rowClass = `spot-row ${
+    spot.status === "Occupied"
       ? "occupied-spot"
       : spot.recommended
-        ? "recommended-spot"
-        : "available-spot"
-    }`;
+      ? "recommended-spot"
+      : "available-spot"
+  }`;
 
   return (
     <tr key={spot.id} className={rowClass}>
@@ -169,12 +170,7 @@ const ParkingReservation = () => {
   return (
     <div className="reservation-page-container">
       <header className="reservation-header">
-        <button
-          className="logo"
-          onClick={() => navigate("/home")} 
-        >
-          SPMS
-        </button>
+        <div className="logo">SPMS</div>
         <nav>
           <button className="logout-button" onClick={() => navigate("/")}>
             Log Out
