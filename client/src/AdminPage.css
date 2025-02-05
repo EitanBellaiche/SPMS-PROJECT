@@ -1,0 +1,218 @@
+.admin-header {
+    width: 100%;
+    background-color: #1565c0; /* צבע רקע תואם */
+    color: white;
+    padding: 10px 20px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-container {
+    display: flex;
+    flex-direction: column; /* גורם לתפריט להיות מתחת להאדר */
+}
+
+.sidebar {
+    background-color: #0d47a1;
+    color: white;
+    padding: 15px;
+    width: 100%;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* גורם לפריטים להיות אחד מתחת לשני */
+    gap: 10px; /* ריווח בין הפריטים */
+}
+
+.admin-header {
+    width: 100%;
+    background-color: #1565c0; /* צבע רקע */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* מפזר את האלמנטים */
+    height: 60px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex: 1;
+    text-align: left; /* מיישר את הלוגו לשמאל */
+}
+
+.header-title {
+    flex: 2;
+    text-align: center; /* ממקם את הכותרת באמצע */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.welcome-message {
+    flex: 1;
+    text-align: right; /* מיישר את הודעת המשתמש לימין */
+    font-size: 0.1rem;
+    font-weight: normal;
+   
+}
+
+.sidebar ul li {
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 10px 15px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-content {
+    padding: 20px;
+}
+.admin-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px); /* מתאים את הגובה לפי גובה ההאדר */
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #0d47a1;
+    color: white;
+    padding: 15px;
+    height: 100%;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-content {
+    flex-grow: 1;
+    padding: 20px;
+    background: linear-gradient(135deg, #e3f2fd, #90caf9);
+}
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white; /* רקע לבן כמו בטבלת החניות */
+    border-radius: 8px; /* פינות מעוגלות */
+    overflow: hidden; /* שומר על העיצוב */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* צל עדין */
+}
+
+.users-table th, .users-table td {
+    border: 1px solid #ddd;
+    padding: 12px; /* קצת יותר ריווח לשיפור קריאות */
+    text-align: left;
+}
+
+.users-table th {
+    background-color: #1565c0; /* צבע רקע של טור הכותרות */
+    color: white; /* צבע טקסט לבן */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.users-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.users-table tr:hover {
+    background-color: #e3f2fd; /* צבע רקע של השורה כשעוברים מעליה */
+    transition: background-color 0.3s;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    margin-inline: 5px; 
+}
+
+.edit-btn {
+    background:grey;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #1565c0;
+}
+
+.delete-btn {
+    background: #d32f2f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #b71c1c;
+}
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-btn {
+    padding: 8px;
+    background: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .parking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .parking-table th, .parking-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
