@@ -126,3 +126,67 @@
     height: 25px;
   }
 }
+/* Header Styling */
+.homepage-header {
+  display: flex;
+  justify-content: space-between; /* Ensure logo is left and signup is right */
+  align-items: center;
+  padding: 20px;
+}
+
+.homepage-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.homepage-header .logo-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.homepage-header .navbar ul {
+  display: flex;
+  gap: 20px;
+}
+
+.homepage-header .navbar ul li {
+  list-style: none;
+}
+
+.homepage-header .navbar a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .homepage-header {
+    flex-direction: row; /* Keep the logo and signup button on the same row */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .homepage-header .logo {
+    margin-bottom: 0; /* Remove any margin */
+  }
+
+  .homepage-header .navbar ul {
+    flex-direction: row; /* Keep the navbar items in a row */
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-header .logo-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .homepage-header .navbar a {
+    font-size: 1rem;
+  }
+}

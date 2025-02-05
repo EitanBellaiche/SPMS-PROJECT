@@ -11,7 +11,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // URL של ה-API מבוסס על סביבת העבודה
+  
   const API_URL =
     process.env.NODE_ENV === "development"
       ? process.env.REACT_APP_API_URL || "http://localhost:5000"
@@ -77,9 +77,6 @@ const Login = () => {
         </div>
         <nav className="navbar">
           <ul>
-            <li>
-              <Link to="/about">About us</Link> {/* שונה ל- Link במקום <a href> */}
-            </li>
             <li>
               <Link to="/signup">Sign up</Link> {/* שונה ל- Link במקום <a href> */}
             </li>
