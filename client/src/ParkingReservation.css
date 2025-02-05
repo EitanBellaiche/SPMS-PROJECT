@@ -70,7 +70,7 @@
 .date-time-picker input,
 .date-time-picker select {
   padding: 0.75rem;
-  border: px solid #ccc;
+  border: px solid #050505;
   border-radius: 8px;
   font-size: 1rem;
   width: 200px;
@@ -102,7 +102,7 @@
 .parking-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: rgb(3, 3, 3);
   border-radius: 10px;
   /* HomePage card radius */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -113,30 +113,30 @@
 .parking-table th {
   background-color: #1565c0;
   /* HomePage header color */
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 1rem;
   text-align: left;
 }
 
 .parking-table td {
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #000000;
   /* Light border */
 }
 
 /* Status badges match HomePage style */
 .available-spot {
-  background-color: #e8f5e9;
+  background-color: #000000;
   /* Light green like HomePage buttons */
 }
 
 .occupied-spot {
-  background-color: #ffebee;
+  background-color: #000000;
   /* Light red */
 }
 
 .recommended-spot {
-  background-color: #e3f2fd;
+  background-color: #052dc0;
   /* Light blue like HomePage greeting section */
 }
 
