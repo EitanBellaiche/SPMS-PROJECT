@@ -3,12 +3,13 @@ import "./ParkingReservation.css";
 import { useNavigate } from "react-router-dom";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = `spot-row ${spot.status === "Occupied"
-    ? "occupied-spot"
-    : spot.recommended
+  const rowClass = `spot-row ${
+    spot.status === "Occupied"
+      ? "occupied-spot"
+      : spot.recommended
       ? "recommended-spot"
       : "available-spot"
-    }`;
+  }`;
 
   return (
     <tr key={spot.id} className={rowClass}>
@@ -62,12 +63,12 @@ const ParkingReservation = () => {
   const [endTime, setEndTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate(); // Add useNavigate hook
 
   const API_URL =
     process.env.NODE_ENV === "development"
       ? process.env.REACT_APP_API_URL || "http://localhost:5000"
       : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
-
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "default_user";
@@ -169,9 +170,12 @@ const ParkingReservation = () => {
   return (
     <div className="reservation-page-container">
       <header className="reservation-header">
-        <h1>Parking Reservation</h1>
-        {username && <p>Welcome, {username}</p>}
-        
+        <div className="logo">SPMS</div>
+        <nav>
+          <button className="logout-button" onClick={() => navigate("/")}>
+            Log Out
+          </button>
+        </nav>
       </header>
 
       <main className="reservation-main">
