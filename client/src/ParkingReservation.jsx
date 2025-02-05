@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./ParkingReservation.css";
+import { useNavigate } from "react-router-dom";
 
 const ParkingSpotRow = ({ spot, onReserve }) => {
-  const rowClass = `spot-row ${
-    spot.status === "Occupied"
+  const rowClass = `spot-row ${spot.status === "Occupied"
       ? "occupied-spot"
       : spot.recommended
-      ? "recommended-spot"
-      : "available-spot"
-  }`;
-  
+        ? "recommended-spot"
+        : "available-spot"
+    }`;
+
   return (
     <tr key={spot.id} className={rowClass}>
       <td>{spot.spot_code}</td>
@@ -62,12 +62,12 @@ const ParkingReservation = () => {
   const [endTime, setEndTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate(); // Add useNavigate hook
 
   const API_URL =
     process.env.NODE_ENV === "development"
       ? process.env.REACT_APP_API_URL || "http://localhost:5000"
       : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
-
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "default_user";
@@ -100,7 +100,7 @@ const ParkingReservation = () => {
       setLoading(true);
 
       const response = await fetch(
-       `${API_URL}/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
+        `${API_URL}/parking-spots?reservation_date=${selectedDate}&start_time=${startTime}&end_time=${endTime}&username=${username}`
       );
       const data = await response.json();
 
@@ -169,54 +169,65 @@ const ParkingReservation = () => {
   return (
     <div className="reservation-page-container">
       <header className="reservation-header">
-        <h1>Parking Reservation</h1>
-        {username && <p>Welcome, {username}</p>}
+        <button
+          className="logo"
+          onClick={() => navigate("/home")} 
+        >
+          SPMS
+        </button>
+        <nav>
+          <button className="logout-button" onClick={() => navigate("/")}>
+            Log Out
+          </button>
+        </nav>
       </header>
 
       <main className="reservation-main">
         <div className="parking-reservation">
           <h2>Find and Reserve Parking</h2>
-          <div className="date-time-picker">
-            <label>
-              Date:
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-            </label>
-            <label>
-              Start Time:
-              <select
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              >
-                <option value="">Select Start Time</option>
-                {timeOptions.map((time) => (
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              End Time:
-              <select
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-              >
-                <option value="">Select End Time</option>
-                {timeOptions.map((time) => (
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="date-time-container">
+            <div className="date-time-picker">
+              <label>
+                Date:
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
+              </label>
+              <label>
+                Start Time:
+                <select
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                >
+                  <option value="">Select Start Time</option>
+                  {timeOptions.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                End Time:
+                <select
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                >
+                  <option value="">Select End Time</option>
+                  {timeOptions.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <button onClick={fetchAvailableSpots} className="search-button">
+              Search
+            </button>
           </div>
-          <button onClick={fetchAvailableSpots} className="search-button">
-            Search
-          </button>
 
           {parkingSpots.some((spot) => spot.recommended) && (
             <div className="recommendation-container">

@@ -7,6 +7,8 @@ const HomePage = () => {
   const [role, setRole] = useState(""); // שמירת התפקיד
   const navigate = useNavigate();
 
+
+
   // שימוש במשתנה סביבתי לכתובת ה-API
   const API_URL =
     process.env.NODE_ENV === "development"
@@ -37,9 +39,11 @@ const HomePage = () => {
       <header className="homepage-header">
         <div className="logo">SPMS</div>
         <nav>
-          <a href="#contact">Contact</a>
+          <button className="logout-button" onClick={() => navigate("/")} >Log Out</button>
         </nav>
       </header>
+
+
 
       {/* Main Content */}
       <div className="main-content">
@@ -73,15 +77,23 @@ const HomePage = () => {
           >
             my Parkings
           </button>
+
         </section>
+
       </div>
 
       {/* Footer */}
       <footer className="footer">
+        <div className="footer-links">
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#terms">Terms of Service</a>
+          <a href="#contact">Contact Us</a>
+        </div>
         © 2024 Smart Parking Management System. All rights reserved.
       </footer>
     </div>
   );
+
 };
 
 export default HomePage;
