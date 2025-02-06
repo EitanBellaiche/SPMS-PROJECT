@@ -15,6 +15,12 @@ const Signup = () => {
     electricVehicle: false,
   });
 
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_API_URL || "http://localhost:5000"
+      : process.env.REACT_APP_API_PRODUCTION_URL || "https://spms-project.onrender.com";
+
+
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
@@ -28,7 +34,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/signup", {
+      const response = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
