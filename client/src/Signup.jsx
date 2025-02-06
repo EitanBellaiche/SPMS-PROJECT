@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Signup.css";
@@ -122,8 +123,8 @@ const Signup = () => {
         </div>
       </main>
 
-      <footer id="contact-footer" className="footer">
-        <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
+      <footer className="footer">
+        © 2024 Smart Parking Management System. All rights reserved.
       </footer>
     </div>
   );
