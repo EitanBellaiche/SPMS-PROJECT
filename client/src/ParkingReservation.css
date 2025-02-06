@@ -5,158 +5,130 @@ body {
   background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
   color: #333;
 }
-/* Go Home Button */
-.back-home-button {
-  background-color: #1565c0;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
-.back-home-button:hover {
-  background-color: #1e88e5; /* שינוי צבע הרקע כשעוברים עם העכבר */
-}
-
-/* Header */
 .reservation-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #1565c0;
   color: white;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for a professional look */
+  padding: 10px 20px;
+  height: 50px;
 }
-
-/* General Styles for the Main Content */
-.reservation-main {
-  text-align: center;
-  padding: 20px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.date-time-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.date-time-picker label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-  font-size: 1.1rem;
-  text-align: left;
-}
-
-.date-time-picker input,
-.date-time-picker select {
-  padding: 10px;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 300px; /* Limit the width for better mobile layout */
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: white;
-  transition: border-color 0.3s ease;
-}
-
-.date-time-picker input:focus,
-.date-time-picker select:focus {
-  border-color: #1565c0;
-  outline: none;
-}
-
-/* Search Button */
-.search-button {
-  background-color: #42a5f5;
-  padding: 12px 20px;
+.back-home-button {
+  background-color: #1565c0; /* Blue background */
   color: white;
+  font-size: 1rem;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
-  max-width: 300px;
-  font-size: 1rem;
   transition: background-color 0.3s ease;
 }
-
-.search-button:hover {
-  background-color: #1e88e5;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .reservation-main {
-    padding: 15px;
-  }
-
-  .date-time-container {
-    gap: 15px;
-  }
-
-  .date-time-picker label {
-    font-size: 1.2rem;
-  }
-
-  .search-button {
-    padding: 12px;
-    font-size: 1.1rem;
-    max-width: 90%; /* Make button take almost full width on smaller screens */
-  }
-
-  .date-time-picker input,
-  .date-time-picker select {
-    padding: 12px;
-    font-size: 1.1rem;
-  }
-}
-
-
-select:focus {
-  border-color: #1565c0;
-  outline: none;
-}
-
-/* Duration Selection */
-.duration-selection {
-  margin: 20px 0;
-  text-align: left;
-}
-
-.duration-selection label {
+.logo {
+  font-size: 1.8rem;
   font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
-.duration-selection input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* Navbar */
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  color: white;
   font-size: 1rem;
-  width: 100px;
+  transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+  color: #90caf9;
+}
+
+
+/* Success Message */
+.success-message {
+  background-color: #43a047;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Section */
+.reservation-main {
+  text-align: center;
+  padding: 20px;
+}
+
+.parking-reservation {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.parking-reservation h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #1565c0;
+}
+
+/* Parking Table */
+.parking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.parking-table th, 
+.parking-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.parking-table th {
+  background-color: #1565c0;
+  color: white;
+  font-weight: bold;
+}
+
+.parking-table td.available {
+  color: #43a047; /* Green for available */
+  font-weight: bold;
+}
+
+.parking-table td.occupied {
+  color: #e53935; /* Red for occupied */
+  font-weight: bold;
+}
+
+.parking-table td {
+  background-color: #f9f9f9;
 }
 
 /* Reserve Button */
 .reserve-button {
-  padding: 10px 20px;
-  background-color: #43a047;
-  color: white;
+  padding: 8px 15px;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
+  color: white;
   transition: background-color 0.3s ease, transform 0.2s;
-  margin-top: 20px;
+  background-color: #43a047; /* Green */
 }
 
 .reserve-button:hover {
@@ -164,15 +136,107 @@ select:focus {
   transform: scale(1.05);
 }
 
-.reserve-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+/* Welcome Message */
+.welcome-message {
+  font-size: 2rem;
+  color: white; /* Yellow */
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+  animation: fadeIn 1s ease-in;
+}
+.button-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-/* Footer */
+/* עיצוב לעיגול עם האות L */
+.profile-icon-letter {
+  width: 50px;
+  height: 50px;
+  background-color: #f9f9f9; /* צבע רקע כחול */
+  color: white; /* צבע טקסט לבן */
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 50%; /* הפיכת הצורה לעיגול */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase; /* אות גדולה */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* צל עדין */
+}
+
+
+/* מבנה כללי של הדף */
+.reservation-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* גובה מלא של הדף */
+}
+
+/* התוכן המרכזי יתפוס את כל המקום הפנוי */
+.reservation-main {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+}
+
+/* הפוטר נשאר בתחתית */
 .footer {
   background-color: #1565c0;
   color: white;
   text-align: center;
   padding: 10px 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendation-container {
+  margin-bottom: 5px;
+  margin-top: 10px; /* מרווח מתחת להודעה */
+}
+
+.recommendation-message {
+  background-color: #e3f2fd; /* רקע כחול בהיר */
+  border: 2px solid #1565c0; /* מסגרת כחולה כהה */
+  border-radius: 5px; /* פינות מעוגלות */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* צל עדין */
+}
+
+.recommendation-text {
+  color: #1565c0; /* טקסט כחול כהה */
+  font-weight: bold; /* טקסט מודגש */
+  text-align: center; /* מיושר למרכז */
+  font-size: 1.2rem; /* גודל טקסט */
+}
+
+.recommended-spot {
+  color: rgb(49, 49, 217); /* רקע צהוב */
+  font-weight: bold; /* טקסט מודגש */
+}
+
+.available-spot {
+  background-color: #e0f7fa; /* רקע תכלת */
+}
+
+.occupied-spot {
+  background-color: #ffcccb; /* רקע אדום */
+}
+
+.spot-row {
+  transition: background-color 0.3s ease; /* מעבר חלק בין צבעים */
 }

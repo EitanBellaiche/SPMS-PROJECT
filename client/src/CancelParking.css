@@ -5,15 +5,7 @@
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
-
-    /* Centering */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
-    min-height: 100vh; /* Full height of viewport */
 }
-
 
 /* Header */
 .homepage-header {

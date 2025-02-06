@@ -52,10 +52,10 @@ const EmployeeReservation = () => {
       alert("Please select days, times, and duration.");
       return;
     }
-
+  
     try {
       setLoading(true);
-
+  
       // שליחת בקשה להזמנת חנייה חוזרת
       const response = await fetch(`${API_URL}/reserve-future-parking`, {
         method: "POST",
@@ -68,16 +68,16 @@ const EmployeeReservation = () => {
           reservationDuration,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
         // ניסיון לשלוף חנייה מומלצת
         const recommendedResponse = await fetch(
           `${API_URL}/recommend-parking?username=${username}&reservation_date=${new Date().toISOString().split("T")[0]}`
         );
         const recommendedData = await recommendedResponse.json();
-
+  
         if (recommendedData.success) {
           alert(
             `Future parking reservations were successful! Recommended parking spot: Spot ${recommendedData.recommendedSpot.spot_code}, Level ${recommendedData.recommendedSpot.level}`
@@ -85,6 +85,9 @@ const EmployeeReservation = () => {
         } else {
           alert("Future parking reservations were successful, but no recommended parking spot was found.");
         }
+  
+        // ניווט לדף הבית אחרי אישור הזמנת החנייה
+        navigate("/home");
       } else {
         alert(data.message || "Failed to reserve future parking.");
       }
@@ -95,18 +98,21 @@ const EmployeeReservation = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="employee-reservation-container">
       <header className="reservation-header">
-        <button className="spms-button" onClick={() => navigate("/home")}>
-          SPMS
-        </button>
-        <h1 className="header-title">Employee Parking Reservation</h1>
-        <button className="logout-button" onClick={() => navigate("/")}>
-          Log Out
-        </button>
+        <div className="logo">SPMS</div>
+        <nav>
+          <button className="back-home-button" onClick={() => navigate("/home")}>
+            Home
+          </button>
+          <button className="logout-button" onClick={() => navigate("/")}>
+            Log Out
+          </button>
+        </nav>
       </header>
+
 
       <main className="reservation-main">
         <div className="reservation-form">
@@ -187,6 +193,9 @@ const EmployeeReservation = () => {
           </button>
         </div>
       </main>
+      <footer id="contact-footer" className="footer">
+        <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

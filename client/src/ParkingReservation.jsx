@@ -178,7 +178,7 @@ const ParkingReservation = () => {
       <header className="reservation-header">
         <div className="logo">SPMS</div>
         <nav>
-        <button className="back-home-button" onClick={() => navigate("/home")}>
+          <button className="back-home-button" onClick={() => navigate("/home")}>
             Home
           </button>
           <button className="logout-button" onClick={() => navigate("/")}>
@@ -252,8 +252,6 @@ const ParkingReservation = () => {
           )}
         </div>
       </main>
-
-      {/* Footer */}
       <footer id="contact-footer" className="footer">
         <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
       </footer>
