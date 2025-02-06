@@ -1,309 +1,178 @@
-/* ParkingReservation.css */
-.reservation-page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* HomePage gradient */
-  padding: 20px;
+/* General Styles */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
+  color: #333;
+}
+/* Go Home Button */
+.back-home-button {
+  background-color: #1565c0;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Match HomePage header */
+.back-home-button:hover {
+  background-color: #1e88e5; /* שינוי צבע הרקע כשעוברים עם העכבר */
+}
+
+/* Header */
 .reservation-header {
   display: flex;
-  align-items: center; /* Vertically center items */
-  justify-content: space-between; /* Space out the logo and navigation */
-  padding: 1rem 2rem;
-  background-color: #1565c0; /* Header background */
-  color: white; /* Text color */
-  border-radius: 10px; /* Slightly rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-}
-
-
-.reservation-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: white; /* Match HomePage header text */
-}
-
-/* Date/Time picker - centered layout */
-.date-time-picker {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  gap: 20px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.date-time-picker label {
-  color: #2c3e50;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center label content */
-  text-align: center; /* Center text */
-}
-
-.date-time-picker input,
-.date-time-picker select {
-  padding: 0.75rem;
-  border: px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  width: 200px;
-  margin-top: 8px; /* Add spacing between label text and input */
-}
-/* Match HomePage buttons */
-.search-button {
-  background-color: #42a5f5; /* HomePage button color */
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1565c0;
   color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for a professional look */
 }
 
-.search-button:hover {
-  background-color: #1e88e5; /* HomePage hover color */
-  transform: translateY(-2px); /* HomePage button hover effect */
-}
-
-/* Table styling to match HomePage cards */
-.parking-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px; /* HomePage card radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* HomePage card shadow */
-  overflow: hidden;
-}
-
-.parking-table th {
-  background-color: #1565c0; /* HomePage header color */
-  color: white;
-  padding: 1rem;
-  text-align: left;
-}
-
-.parking-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #eee; /* Light border */
-}
-
-/* Status badges match HomePage style */
-.available-spot {
-  background-color: #e8f5e9; /* Light green like HomePage buttons */
-}
-
-.occupied-spot {
-  background-color: #ffebee; /* Light red */
-}
-
-.recommended-spot {
-  background-color: #e3f2fd; /* Light blue like HomePage greeting section */
-}
-
-
-.reserve-button {
-  background-color: #42a5f5 !important; /* Force HomePage button color */
-  color: rgb(0, 0, 0) !important;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-/* Mobile responsiveness (matches HomePage breakpoints) */
-@media (max-width: 768px) {
-  .reservation-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .date-time-picker {
-    flex-direction: column;
-  }
-
-  .date-time-picker input,
-  .date-time-picker select {
-    width: 100%;
-  }
-}
-
-/* ParkingReservation.css */
-.reservation-page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-image: url('./assets/parkingRes.png'); /* Path to your image */
-  background-size: cover; /* Ensures the image covers the entire container */
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents the image from repeating */
-  padding: 20px;
-  position: relative;
-}
-
-/* Overlay to improve readability */
-.reservation-page-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* Dark overlay with 40% opacity */
-  z-index: 1;
-}
-
-/* Ensure content is above the overlay */
-.reservation-header,
+/* General Styles for the Main Content */
 .reservation-main {
-  color: #000000;
-  position: relative;
-  z-index: 2;
-  font-size: 1.2rem;
-
-}
-
-/* White container for date/time picker */
-.date-time-container {
-  background: white; /* White background */
-  padding: 20px; /* Add padding */
-  border-radius: 10px; /* Match HomePage card radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Match HomePage card shadow */
-  margin-bottom: 20px; /* Add spacing below */
-  width: fit-content; /* Fit content width */
-  margin-left: auto; /* Center horizontally */
-  margin-right: auto; /* Center horizontally */
-}
-
-/* Date/Time picker - centered layout */
-.date-time-picker {
+  text-align: center;
+  padding: 20px;
+  flex: 1;
   display: flex;
-  justify-content: center; /* Center horizontally */
+  flex-direction: column;
+  justify-content: center;
+}
+
+.date-time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
 .date-time-picker label {
-  color: #2c3e50;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center label content */
-  text-align: center; /* Center text */
-}
-.spms-button {
-  background-color: transparent; /* No background to blend with header */
-  color: white; /* Same color as Log Out button */
-  font-size: 1.2rem;
   font-weight: bold;
-  padding: 0.75rem 1.5rem; /* Same padding as Log Out */
-  border: none; /* Remove border */
-  border-radius: 8px; /* Keep consistent with other buttons */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.spms-button:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
-  transform: translateY(-2px); /* Slight lift on hover */
-}
-
-
-
-.date-time-picker input,
-.date-time-picker select {
-  padding: 0.75rem;
-  border: 1px solid #ccc; /* Fix missing border width */
-  border-radius: 8px;
-  font-size: 1rem;
-  width: 200px;
-  margin-top: 8px; /* Add spacing between label text and input */
-}
-
-/* Match HomePage buttons */
-.search-button {
-  background-color: #42a5f5; /* HomePage button color */
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.search-button:hover {
-  background-color: #1e88e5; /* HomePage hover color */
-  transform: translateY(-2px); /* HomePage button hover effect */
-}
-
-/* Table styling to match HomePage cards */
-.parking-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px; /* HomePage card radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* HomePage card shadow */
-  overflow: hidden;
-}
-
-.parking-table th {
-  background-color: #1565c0; /* HomePage header color */
-  color: white;
-  padding: 1rem;
+  margin-bottom: 5px;
+  display: block;
+  font-size: 1.1rem;
   text-align: left;
 }
 
-.parking-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #eee; /* Light border */
-}
-
-/* Status badges match HomePage style */
-.available-spot {
-  background-color: #e8f5e9; /* Light green like HomePage buttons */
-}
-
-.occupied-spot {
-  background-color: #ffebee; /* Light red */
-}
-
-.recommended-spot {
-  background-color: #e3f2fd; /* Light blue like HomePage greeting section */
-}
-
-.reserve-button {
-  background-color: #42a5f5 !important; /* Force HomePage button color */
-  color: white !important;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+.date-time-picker input,
+.date-time-picker select {
+  padding: 10px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px; /* Limit the width for better mobile layout */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
 
-/* Mobile responsiveness (matches HomePage breakpoints) */
+.date-time-picker input:focus,
+.date-time-picker select:focus {
+  border-color: #1565c0;
+  outline: none;
+}
+
+/* Search Button */
+.search-button {
+  background-color: #42a5f5;
+  padding: 12px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #1e88e5;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .reservation-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
+  .reservation-main {
+    padding: 15px;
   }
 
-  .date-time-picker {
-    flex-direction: column;
+  .date-time-container {
+    gap: 15px;
+  }
+
+  .date-time-picker label {
+    font-size: 1.2rem;
+  }
+
+  .search-button {
+    padding: 12px;
+    font-size: 1.1rem;
+    max-width: 90%; /* Make button take almost full width on smaller screens */
   }
 
   .date-time-picker input,
   .date-time-picker select {
-    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
   }
+}
+
+
+select:focus {
+  border-color: #1565c0;
+  outline: none;
+}
+
+/* Duration Selection */
+.duration-selection {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.duration-selection label {
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.duration-selection input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100px;
+}
+
+/* Reserve Button */
+.reserve-button {
+  padding: 10px 20px;
+  background-color: #43a047;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+  margin-top: 20px;
+}
+
+.reserve-button:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+.reserve-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.footer {
+  background-color: #1565c0;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
 }

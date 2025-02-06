@@ -32,8 +32,8 @@ const ParkingSpotRow = ({ spot, onReserve }) => {
 };
 
 const ParkingTable = ({ parkingSpots, onReserve }) => {
-  if (!parkingSpots.length) {
-    return <p className="no-spots-message">No available parking spots.</p>;
+  if (!parkingSpots || parkingSpots.length === 0) {
+    return null; // אין להציג הודעת "אין חניות" אם אין חניות זמינות
   }
 
   return (
@@ -54,6 +54,7 @@ const ParkingTable = ({ parkingSpots, onReserve }) => {
     </table>
   );
 };
+
 
 const ParkingReservation = () => {
   const [parkingSpots, setParkingSpots] = useState([]);
@@ -168,21 +169,20 @@ const ParkingReservation = () => {
 
   return (
     <div className="reservation-page-container">
+      {/* Header */}
       <header className="reservation-header">
-        <div className="logo">
-          <button className="spms-button" onClick={() => navigate("/home")}>
-            SPMS
-          </button>
-        </div>
+        <div className="logo">SPMS</div>
         <nav>
+        <button className="back-home-button" onClick={() => navigate("/home")}>
+            Home
+          </button>
           <button className="logout-button" onClick={() => navigate("/")}>
             Log Out
           </button>
         </nav>
       </header>
 
-
-
+      {/* Main Content */}
       <main className="reservation-main">
         <div className="parking-reservation">
           <h2>Find and Reserve Parking</h2>
@@ -247,6 +247,11 @@ const ParkingReservation = () => {
           )}
         </div>
       </main>
+
+      {/* Footer */}
+      <footer id="contact-footer" className="footer">
+        <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
