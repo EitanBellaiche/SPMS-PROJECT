@@ -109,7 +109,7 @@ const Login = () => {
         </div>
       </main>
 
-      <footer id="contact-footer" className="homepage-footer">
+      <footer id="contact-footer" className="footer">
         <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
       </footer>
     </div>

@@ -13,13 +13,14 @@ body {
   align-items: center;
   background-color: #1565c0;
   color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for a professional look */
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 2rem; /* Larger font size for logo */
   font-weight: bold;
+  letter-spacing: 1px; /* Slightly increase letter spacing */
 }
 
 nav a {
@@ -39,22 +40,23 @@ nav a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e3f2fd;
-  padding: 20px;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #e3f2fd, #87adda); /* Gradient background */
+  padding: 25px;
+  border-radius: 12px;
   margin: 60px 20px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1s ease-in-out;
 }
 
 .greeting-text h2 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 2rem; /* Larger font size for the heading */
   color: #1565c0;
 }
 
 .greeting-text p {
   margin: 5px 0 0;
-  font-size: 1.2rem;
+  font-size: 1.3rem; /* Slightly larger font for better readability */
   color: #424242;
 }
 
@@ -64,29 +66,30 @@ nav a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 45px;
+  gap: 40px;
   margin: 30px 0;
-  height: 60vh;
+  height: auto;
 }
 
 .action-button {
   background-color: #42a5f5;
   color: white;
   font-size: 1.5rem;
-  padding: 15px 30px;
+  padding: 20px 30px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px; /* Slightly rounded corners */
   width: 100%;
   max-width: 350px;
   text-align: center;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s ease;
+  transition: background-color 0.1s, transform 0.2s ease;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .action-button:hover {
   background-color: #1e88e5;
-  transform: translateY(-2px); /* Slight lift on hover */
+  transform: translateY(-5px); /* Stronger lift on hover */
 }
 
 .button-icon {
@@ -97,74 +100,36 @@ nav a:hover {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #fff; /* Add a background color for the icon */
+  background-color: #fff;
 }
 
-/* מבנה כללי */
+/* Main Structure */
 .homepage-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Light gradient */
+  background-image: url('./assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 .main-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 20px; /* More padding around the content */
+  margin-bottom: 50px;
 }
 
-/* Footer */
 .footer {
   background-color: #1565c0;
   color: white;
   text-align: center;
-  padding: 10px 0;
-  font-size: 0.9rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .homepage-header {
-    flex-direction: column;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .greeting-section {
-    flex-direction: column;
-    text-align: center;
-    margin: 30px 10px 0;
-  }
-
-  .action-buttons {
-    gap: 20px;
-    height: auto;
-    padding: 20px 0;
-  }
-
-  .action-button {
-    width: 90%;
-    max-width: 300px;
-  }
-}
-
-/* Fade-in Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.greeting-section {
-  animation: fadeIn 1s ease-in-out;
-}
-
-.action-button {
-  animation: fadeIn 0.5s ease-in-out;
+  padding: 15px 0;
+  font-size: 1rem;
 }
 
 .footer-links {
@@ -180,15 +145,7 @@ nav a:hover {
   font-size: 0.9rem;
 }
 
-.homepage-container {
-  background-image: url('./assets/background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  position: relative;
-}
-
+/* Logout Button */
 .logout-button {
   background-color: transparent;
   border: none;
@@ -201,5 +158,51 @@ nav a:hover {
 }
 
 .logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .homepage-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .greeting-section {
+    flex-direction: column;
+    text-align: center;
+    margin: 50px 10px 0;
+  }
+
+  .action-buttons {
+    gap: 20px;
+    padding: 20px 0;
+    margin-top: 20px; /* Added top margin for spacing */
+  }
+
+  .action-button {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .footer {
+    margin-top: 50px; /* Ensure footer is well-spaced */
+  }
+
+  .main-content {
+    margin-top: 50px;
+  }
 }

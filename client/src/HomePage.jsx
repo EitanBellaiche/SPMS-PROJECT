@@ -75,7 +75,7 @@ const HomePage = () => {
             className="action-button"
             onClick={() => navigate("/cancel-parking")}
           >
-            my Parkings
+            My Parkings
           </button>
 
         </section>
@@ -83,13 +83,8 @@ const HomePage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-links">
-          <a href="#privacy">Privacy Policy</a>
-          <a href="#terms">Terms of Service</a>
-          <a href="#contact">Contact Us</a>
-        </div>
-        © 2024 Smart Parking Management System. All rights reserved.
+      <footer id="contact-footer" className="footer">
+        <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
       </footer>
     </div>
   );

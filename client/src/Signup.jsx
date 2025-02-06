@@ -122,8 +122,8 @@ const Signup = () => {
         </div>
       </main>
 
-      <footer className="footer">
-        © 2024 Smart Parking Management System. All rights reserved.
+      <footer id="contact-footer" className="footer">
+        <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
       </footer>
     </div>
   );
