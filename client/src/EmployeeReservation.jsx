@@ -107,9 +107,6 @@ const EmployeeReservation = () => {
           <button className="back-home-button" onClick={() => navigate("/home")}>
             Home
           </button>
-          <button className="logout-button" onClick={() => navigate("/")}>
-            Log Out
-          </button>
         </nav>
       </header>
 
