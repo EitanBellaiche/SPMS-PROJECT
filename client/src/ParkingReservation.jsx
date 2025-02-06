@@ -139,7 +139,7 @@ const ParkingReservation = () => {
       alert("Please provide all details before reserving.");
       return;
     }
-
+  
     try {
       const response = await fetch(`${API_URL}/reserve-spot-date`, {
         method: "POST",
@@ -152,11 +152,15 @@ const ParkingReservation = () => {
           end_time: endTime,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
-        alert(data.message);
+        // הצגת הודעה על ההצלחה
+        alert(data.message || "Parking spot reserved successfully!");
+        
+        // ניווט לדף הבית אחרי הצלחה
+        navigate("/home");
         fetchAvailableSpots(); // Refresh spots after reservation
       } else {
         alert(data.message || "Failed to reserve spot.");
@@ -166,6 +170,7 @@ const ParkingReservation = () => {
       console.error("Error reserving spot:", error);
     }
   };
+  
 
   return (
     <div className="reservation-page-container">
