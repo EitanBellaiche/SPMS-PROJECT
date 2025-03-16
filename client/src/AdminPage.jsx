@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./AdminPage.css";
+import { Chart, registerables } from "chart.js";
+import { Pie } from "react-chartjs-2";
 
+Chart.register(...registerables);
 
   const AdminPage = () => {
   const [users, setUsers] = useState([]);
