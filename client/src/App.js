@@ -6,10 +6,10 @@ import Signup from "./Signup";
 import AdminPage from "./AdminPage";
 import ParkingReservation from "./ParkingReservation";
 import CancelParking from "./CancelParking";
-import EmployeeReservation from "./EmployeeReservation"; // Import the EmployeePage
+import EmployeeReservation from "./EmployeeReservation"; 
 
 const App = () => {
-  // הגדרת basename דינמית בהתאם לסביבה
+
   const basename = process.env.REACT_APP_BASENAME || "/";
 
   return (

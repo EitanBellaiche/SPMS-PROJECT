@@ -27,7 +27,7 @@ const CancelParking = () => {
           );
           const data = await response.json();
 
-          console.log("Reservations Data:", data); // ✅ בדיקה האם הנתונים מגיעים
+          console.log("Reservations Data:", data); 
 
           if (data.success) {
             setReservations(data.reservations);

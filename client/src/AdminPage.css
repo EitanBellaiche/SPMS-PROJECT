@@ -1,6 +1,6 @@
 .admin-header {
     width: 100%;
-    background-color: #1565c0; /* צבע רקע תואם */
+    background-color: #1565c0; 
     color: white;
     padding: 10px 20px;
     text-align: left;
@@ -18,7 +18,7 @@
 
 .admin-container {
     display: flex;
-    flex-direction: column; /* גורם לתפריט להיות מתחת להאדר */
+    flex-direction: column; 
 }
 
 .sidebar {
@@ -33,18 +33,18 @@
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column; /* גורם לפריטים להיות אחד מתחת לשני */
-    gap: 10px; /* ריווח בין הפריטים */
+    flex-direction: column; 
+    gap: 10px;
 }
 
 .admin-header {
     width: 100%;
-    background-color: #1565c0; /* צבע רקע */
+    background-color: #1565c0; 
     color: white;
     padding: 10px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* מפזר את האלמנטים */
+    justify-content: space-between; 
     height: 60px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -53,19 +53,19 @@
     font-size: 1.5rem;
     font-weight: bold;
     flex: 1;
-    text-align: left; /* מיישר את הלוגו לשמאל */
+    text-align: left; 
 }
 
 .header-title {
     flex: 2;
-    text-align: center; /* ממקם את הכותרת באמצע */
+    text-align: center; 
     font-size: 1.5rem;
     font-weight: bold;
 }
 
 .welcome-message {
     flex: 1;
-    text-align: right; /* מיישר את הודעת המשתמש לימין */
+    text-align: right; 
     font-size: 0.1rem;
     font-weight: normal;
    
@@ -88,7 +88,7 @@
 .admin-wrapper {
     display: flex;
     flex-direction: row;
-    height: calc(100vh - 60px); /* מתאים את הגובה לפי גובה ההאדר */
+    height: calc(100vh - 60px); 
 }
 
 .sidebar {
@@ -125,21 +125,21 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background: white; /* רקע לבן כמו בטבלת החניות */
-    border-radius: 8px; /* פינות מעוגלות */
-    overflow: hidden; /* שומר על העיצוב */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* צל עדין */
+    background: white; 
+    border-radius: 8px; 
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .users-table th, .users-table td {
     border: 1px solid #ddd;
-    padding: 12px; /* קצת יותר ריווח לשיפור קריאות */
+    padding: 12px;
     text-align: left;
 }
 
 .users-table th {
-    background-color: #1565c0; /* צבע רקע של טור הכותרות */
-    color: white; /* צבע טקסט לבן */
+    background-color: #1565c0;
+    color: white; 
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -149,7 +149,7 @@
 }
 
 .users-table tr:hover {
-    background-color: #e3f2fd; /* צבע רקע של השורה כשעוברים מעליה */
+    background-color: #e3f2fd; 
     transition: background-color 0.3s;
 }
 

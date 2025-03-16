@@ -1,4 +1,3 @@
-/* Container */
 .cancel-page-container {
     text-align: center;
     padding: 20px;
@@ -7,32 +6,30 @@
     margin: 0 auto;
 }
 
-/* Header */
 .homepage-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: fixed; /* מקבע את ההאדר לחלק העליון */
+    position: fixed; 
     top: 0;
     left: 0;
-    width: 100%; /* מכסה את כל רוחב המסך */
-    background-color: #1565c0; /* צבע רקע */
-    color: white; /* צבע טקסט */
-    padding: 10px 0; /* מרווח פנימי אנכי בלבד */
-    z-index: 1000; /* מעלה את האדר מעל אלמנטים אחרים */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* הצללה */
+    width: 100%; 
+    background-color: #1565c0; 
+    color: white; 
+    padding: 10px 0;
+    z-index: 1000; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Logo */
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    margin-left: 20px; /* מרווח משמאל */
+    margin-left: 20px; 
 }
 
-/* Navigation links */
+
 nav {
-    margin-right: 20px; /* מרווח מימין */
+    margin-right: 20px; 
 }
 
 nav a {
@@ -43,7 +40,7 @@ nav a {
 }
 
 .back-home-button {
-    background-color: #1565c0; /* Blue background */
+    background-color: #1565c0; 
     color: white;
     font-size: 1rem;
     padding: 10px 15px;
@@ -53,13 +50,11 @@ nav a {
     transition: background-color 0.3s ease;
   }
   
-/* Main Content */
 .cancel-main {
-    margin-top: 60px; /* משאיר מקום מתחת ל-header */
+    margin-top: 60px; 
     padding: 0 10px;
 }
 
-/* Buttons */
 .cancel-button,
 .details-button,
 .back-button {
@@ -100,7 +95,6 @@ nav a {
     background-color: #388e3c;
 }
 
-/* Reservations Table */
 .reservations-table {
     width: 100%;
     border-collapse: collapse;
@@ -120,7 +114,6 @@ nav a {
     font-weight: bold;
 }
 
-/* Modal */
 .details-modal {
     position: fixed;
     top: 0;
@@ -186,7 +179,6 @@ nav a {
     background-color: #d32f2f;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -198,7 +190,6 @@ nav a {
     }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .modal-content {
         padding: 15px;

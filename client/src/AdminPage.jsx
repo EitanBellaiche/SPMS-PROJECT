@@ -86,8 +86,8 @@ Chart.register(...registerables);
       username: updatedUser.username,
       role: updatedUser.role,
       building: updatedUser.building,
-      is_disabled_user: updatedUser.disabled, // שינוי השם ל-DB
-      is_electric_car: updatedUser.electric_car, // שינוי השם ל-DB
+      is_disabled_user: updatedUser.disabled, 
+      is_electric_car: updatedUser.electric_car, 
     };
   
     try {
@@ -124,7 +124,7 @@ Chart.register(...registerables);
   
       if (data.success) {
         alert("User deleted successfully!");
-        setUsers(users.filter(user => user.id !== userId)); // עדכון הרשימה אחרי מחיקה
+        setUsers(users.filter(user => user.id !== userId)); 
       } else {
         alert("Failed to delete user: " + data.message);
       }
@@ -192,14 +192,14 @@ Chart.register(...registerables);
   };
   
   const generatePieData = (data, label) => {
-    console.log("📊 generatePieData received:", data); // ✅ בדיקה נוספת
+    console.log("📊 generatePieData received:", data); 
     if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
       return {
         labels: ["No Data"],
         datasets: [
           {
             label,
-            data: [1], // ברירת מחדל למניעת קריסה
+            data: [1],
             backgroundColor: ["#CCCCCC"],
           },
         ],
@@ -207,7 +207,7 @@ Chart.register(...registerables);
     }
   
     return {
-      labels: Object.keys(data), // רשימת התאריכים
+      labels: Object.keys(data), 
       datasets: [
         {
           label,
@@ -286,15 +286,15 @@ Chart.register(...registerables);
                             <td>
                               <input
                                 type="checkbox"
-                                checked={editedUser.is_disabled_user} // ✅ שינוי השם 
-                                onChange={(e) => setEditedUser({ ...editedUser, is_disabled_user: e.target.checked })} // ✅ שינוי השם 
+                                checked={editedUser.is_disabled_user} 
+                                onChange={(e) => setEditedUser({ ...editedUser, is_disabled_user: e.target.checked })} 
                               />
                             </td>
                             <td>
                               <input
                                 type="checkbox"
-                                checked={editedUser.is_electric_car} // ✅ שינוי השם 
-                                onChange={(e) => setEditedUser({ ...editedUser, is_electric_car: e.target.checked })} // ✅ שינוי השם 
+                                checked={editedUser.is_electric_car} 
+                                onChange={(e) => setEditedUser({ ...editedUser, is_electric_car: e.target.checked })} 
                               />
                             </td>
                             <td>
