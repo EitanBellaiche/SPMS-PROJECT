@@ -607,54 +607,46 @@ def get_users():
             finally:
                 cursor.close()
 
-@app.route('/update-user/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
+@app.route('/delete-user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
     try:
-        data = request.json
-        print("📥 Received data:", data)  
-
         cursor = db.cursor()
-
-        # בדיקה אם המשתמש קיים
-        cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
-        user_exists = cursor.fetchone()
-
-        if not user_exists:
-            return jsonify({"success": False, "message": "User not found"}), 404
-
-        # ✅ הפיכת הערכים הבוליאניים ל-True/False כדי להתאים ל-PostgreSQL
-        is_disabled = bool(data["is_disabled_user"])
-        is_electric = bool(data["is_electric_car"])
-
-        # עדכון המשתמש
-        cursor.execute("""
-            UPDATE users 
-            SET username = %s, role = %s, building = %s, is_disabled_user = %s, is_electric_car = %s
-            WHERE id = %s
-        """, (data["username"], data["role"], data["building"], is_disabled, is_electric, user_id))
-
-        # 🔹 הדפסת מספר הרשומות שהושפעו
-        print(f"🔄 Rows affected by UPDATE: {cursor.rowcount}")
-
-        if cursor.rowcount == 0:
-            print("⚠️ No rows updated. Check if the data is actually different.")
-            return jsonify({"success": False, "message": "No changes detected"}), 400
-
+        query = "DELETE FROM users WHERE id = %s"
+        cursor.execute(query, (user_id,))
         db.commit()
-        print("✅ User updated successfully!")  
-
-        return jsonify({"success": True, "message": "User updated successfully"})
-
+        return jsonify({"success": True, "message": "User deleted successfully"})
     except Exception as e:
+        print("Error deleting user:", e)
         db.rollback()
-        print("❌ Error updating user:", str(e))
-        return jsonify({"success": False, "message": f"Failed to update user: {str(e)}"}), 500
-
+        return jsonify({"success": False, "message": "Failed to delete user"}), 500
     finally:
         cursor.close()
 
+@app.route('/update-user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.json
+    username = data.get("username")
+    role = data.get("role")
+    building = data.get("building")
+    disabled = data.get("disabled")
+    electric_car = data.get("electric_car")
 
-
+    try:
+        cursor = db.cursor()
+        query = """
+            UPDATE users
+            SET username = %s, role = %s, building = %s, is_disabled_user = %s, is_electric_car = %s
+            WHERE id = %s
+        """
+        cursor.execute(query, (username, role, building, disabled, electric_car, user_id))
+        db.commit()
+        return jsonify({"success": True, "message": "User updated successfully"})
+    except Exception as e:
+        print("Error updating user:", e)
+        db.rollback()
+        return jsonify({"success": False, "message": "Failed to update user"}), 500
+    finally:
+        cursor.close()
 @app.route('/parking-spots', methods=['GET'])
 def retrieve_parking_spots():
     reservation_date = request.args.get("reservation_date")
@@ -756,104 +748,8 @@ def get_all_parking_spots():
         return jsonify({"success": False, "error": "Unable to fetch parking spots"}), 500
     finally:
         cursor.close()
-@app.route('/stats/parking-occupancy', methods=['GET'])
-def get_parking_occupancy():
-    try:
-        cursor = db.cursor()
-        query = """
-            SELECT reservation_date, COUNT(*) as total_reservations
-            FROM reservations
-            GROUP BY reservation_date
-            ORDER BY reservation_date;
-        """
-        cursor.execute(query)
-        rows = cursor.fetchall()
 
-        occupancy_data = {str(row[0]): int(row[1]) if row[1] is not None else 0 for row in rows}
-
-        print("📊 API Response:", occupancy_data)  # ✅ בדיקה בשרת Flask
-        return jsonify({"success": True, "occupancy": occupancy_data})
-    except Exception as e:
-        print("Error fetching parking occupancy stats:", e)
-        return jsonify({"success": False, "error": "Unable to fetch parking occupancy"}), 500
-    finally:
-        cursor.close()
-
-
-@app.route('/stats/special-parking', methods=['GET'])
-def get_special_parking_stats():
-    try:
-        cursor = db.cursor()
-        query = """
-            SELECT 
-                SUM(CASE WHEN ps.is_electric = TRUE THEN 1 ELSE 0 END) AS electric_reserved,
-                SUM(CASE WHEN ps.is_disabled = TRUE THEN 1 ELSE 0 END) AS disabled_reserved,
-                COUNT(*) AS total_reserved
-            FROM reservations r
-            JOIN parking_spots ps ON r.parking_spot_id = ps.id;
-        """
-        cursor.execute(query)
-        row = cursor.fetchone()
-
-        special_stats = {
-            "Electric": row[0],
-            "Disabled": row[1],
-            "Regular": row[2] - (row[0] + row[1])
-        }
-
-        return jsonify({"success": True, "specialParking": special_stats})
-    except Exception as e:
-        print("Error fetching special parking stats:", e)
-        return jsonify({"success": False, "error": "Unable to fetch special parking stats"}), 500
-    finally:
-        cursor.close()
-
-@app.route('/stats/employees-per-day', methods=['GET'])
-def get_employees_per_day():
-    try:
-        cursor = db.cursor()
-        query = """
-            SELECT reservation_date, COUNT(DISTINCT username) AS unique_users
-            FROM reservations
-            GROUP BY reservation_date
-            ORDER BY reservation_date;
-        """
-        cursor.execute(query)
-        rows = cursor.fetchall()
-
-        employees_data = {row[0].strftime("%Y-%m-%d"): row[1] for row in rows}
-
-        return jsonify({"success": True, "employees": employees_data})
-    except Exception as e:
-        print("Error fetching employees stats:", e)
-        return jsonify({"success": False, "error": "Unable to fetch employees stats"}), 500
-    finally:
-        cursor.close()
-
-@app.route('/delete-user/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-            try:
-                cursor = db.cursor()
-
-                # בדיקה אם המשתמש קיים
-                cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
-                user_exists = cursor.fetchone()
-
-                if not user_exists:
-                    return jsonify({"success": False, "message": "User not found"}), 404
-
-                query = "DELETE FROM users WHERE id = %s"
-                cursor.execute(query, (user_id,))
-                db.commit()
-                
-                return jsonify({"success": True, "message": "User deleted successfully"})
-            except Exception as e:
-                print("Error deleting user:", e)
-                db.rollback()
-                return jsonify({"success": False, "message": "Failed to delete user"}), 500
-            finally:
-                cursor.close()
 
 
 if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
