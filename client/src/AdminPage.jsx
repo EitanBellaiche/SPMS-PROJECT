@@ -243,7 +243,6 @@ Chart.register(...registerables);
             <li onClick={() => setActiveSection("reports")}>Statistics</li>
           </ul>
         </aside>
-
         <div className="admin-content">
           <main className="admin-main">
             {activeSection === "users" && (
@@ -280,7 +279,10 @@ Chart.register(...registerables);
                                 onChange={(e) => setEditedUser({ ...editedUser, role: e.target.value })}
                               >
                                 <option value="admin">Admin</option>
-                                <option value="user">User</option>
+                                <option value="guest">Guest</option>
+                                <option value="employee">Employee</option>
+
+
                               </select>
                             </td>
                             <td>
