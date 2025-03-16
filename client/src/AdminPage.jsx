@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import "./AdminPage.css";
-ChartJS.register(ArcElement, Tooltip, Legend);
+
 
   const AdminPage = () => {
   const [users, setUsers] = useState([]);
@@ -30,48 +28,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
     if (activeSection === "users") {
       fetchUsers();
     }
-    if (activeSection === "buildings") {
-      fetchBuildings();
-    }
-    if (activeSection === "reports") {
-      fetch(`${API_URL}/stats/parking-occupancy`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("📊 Parking Occupancy Data:", data); // ✅ בדיקה בקונסול
-          if (data.success) {
-            setParkingData(data.occupancy);
-          } else {
-            console.error("❌ Failed to load parking occupancy data:", data);
-          }
-        })
-        .catch((error) => console.error("🚨 API Error - parking occupancy:", error));
-  
-      fetch(`${API_URL}/stats/special-parking`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("🔌 Special Parking Data:", data); // ✅ בדיקה בקונסול
-          if (data.success) {
-            setSpecialParkingData(data.specialParking);
-          } else {
-            console.error("❌ Failed to load special parking data:", data);
-          }
-        })
-        .catch((error) => console.error("🚨 API Error - special parking:", error));
-  
-      fetch(`${API_URL}/stats/employees-per-day`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("👥 Employees Per Day Data:", data); // ✅ בדיקה בקונסול
-          if (data.success) {
-            setEmployeesData(data.employees);
-          } else {
-            console.error("❌ Failed to load employees data:", data);
-          }
-        })
-        .catch((error) => console.error("🚨 API Error - employees per day:", error));
-    }
   }, [activeSection]);
-  
 
   const fetchUsers = async () => {
     try {
@@ -86,7 +43,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
       console.error("Error fetching users:", error);
     }
   };
-
+  
   const fetchFilteredParkingSpots = async () => {
     if (!selectedDate || !startTime || !endTime) {
       alert("Please select a date and time range.");
