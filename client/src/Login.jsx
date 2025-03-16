@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // תיקון: הוספתי את Link
+import { useNavigate, Link } from "react-router-dom"; 
 import "./Login.css";
 import logo from "./assets/logo.png"; // Importing the logo from src/assets
 
@@ -78,7 +78,7 @@ const Login = () => {
         <nav className="navbar">
           <ul>
             <li>
-              <Link to="/signup">Sign up</Link> {/* שונה ל- Link במקום <a href> */}
+              <Link to="/signup">Sign up</Link> { }
             </li>
           </ul>
         </nav>

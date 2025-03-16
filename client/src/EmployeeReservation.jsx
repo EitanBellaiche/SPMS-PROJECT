@@ -8,7 +8,7 @@ const EmployeeReservation = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [reservationDuration, setReservationDuration] = useState(1); // שבועות
+  const [reservationDuration, setReservationDuration] = useState(1); 
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const EmployeeReservation = () => {
     const options = [];
     for (let hour = 6; hour <= 24; hour++) {
       if (hour === 24) {
-        options.push("00:00"); // סיום הטווח בחצות
+        options.push("00:00"); 
         break;
       }
       const hourStr = hour.toString().padStart(2, "0");
@@ -56,7 +56,6 @@ const EmployeeReservation = () => {
     try {
       setLoading(true);
   
-      // שליחת בקשה להזמנת חנייה חוזרת
       const response = await fetch(`${API_URL}/reserve-future-parking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,7 +71,7 @@ const EmployeeReservation = () => {
       const data = await response.json();
   
       if (data.success) {
-        // ניסיון לשלוף חנייה מומלצת
+
         const recommendedResponse = await fetch(
           `${API_URL}/recommend-parking?username=${username}&reservation_date=${new Date().toISOString().split("T")[0]}`
         );
@@ -86,7 +85,6 @@ const EmployeeReservation = () => {
           alert("Future parking reservations were successful, but no recommended parking spot was found.");
         }
   
-        // ניווט לדף הבית אחרי אישור הזמנת החנייה
         navigate("/home");
       } else {
         alert(data.message || "Failed to reserve future parking.");

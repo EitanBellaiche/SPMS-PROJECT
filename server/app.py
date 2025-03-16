@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
-import os  # לשימוש במשתני סביבה
+import os 
 from datetime import datetime, date, time, timedelta
 
 app = Flask(__name__, static_folder="client/build")  
@@ -15,7 +15,7 @@ try:
         user=os.getenv("DB_USER", "spms_database_user"),
         password=os.getenv("DB_PASSWORD", "iGvT2YElFoS9dz4V7Lt1yc6UWO5UKTTx"),
         port=os.getenv("DB_PORT", 5432),
-        sslmode="require"  # חובה להשתמש ב-SSL
+        sslmode="require"  
     )
     print("Database connected successfully!")
 except psycopg2.OperationalError as e:
@@ -57,7 +57,7 @@ def get_parking_spots():
     reservation_date = request.args.get("reservation_date")
     start_time = request.args.get("start_time")
     end_time = request.args.get("end_time")
-    username = request.args.get("username")  # קבלת שם המשתמש
+    username = request.args.get("username") 
 
     if not reservation_date or not start_time or not end_time or not username:
         return jsonify({"success": False, "message": "All fields are required"}), 400
@@ -65,7 +65,6 @@ def get_parking_spots():
     try:
         cursor = db.cursor()
 
-        # שליפת הצרכים של המשתמש
         user_query = """
             SELECT is_electric_car, is_disabled_user
             FROM users
@@ -77,7 +76,6 @@ def get_parking_spots():
         is_electric_car = user_preferences[0]
         is_disabled_user = user_preferences[1]
 
-        # שאילתה מותאמת לצרכי המשתמש
         query = """
             SELECT ps.id, ps.spot_code, ps.level,
                    CASE 
@@ -203,25 +201,21 @@ def reserve_spot_date():
     """
     data = request.json
 
-    # קבלת נתונים מהבקשה
     username = data.get("username")
     spot_id = data.get("spot_id")
     reservation_date = data.get("reservation_date")
     start_time = data.get("start_time")
     end_time = data.get("end_time")
 
-    # בדיקה שהשדות הנדרשים קיימים
     if not username or not spot_id or not reservation_date or not start_time or not end_time:
         return jsonify({"success": False, "message": "All fields are required"}), 400
 
-    # בדיקה שפורמט השעה חוקי
     if not is_valid_time_format(start_time) or not is_valid_time_format(end_time):
         return jsonify({"success": False, "message": "Time must be in 30-minute intervals"}), 400
 
     try:
         cursor = db.cursor()
 
-        # בדיקה אם החניה כבר מוזמנת בשעות האלו
         check_query = """
             SELECT 1 FROM reservations
             WHERE parking_spot_id = %s AND reservation_date = %s
@@ -233,7 +227,6 @@ def reserve_spot_date():
         if result:
             return jsonify({"success": False, "message": "Parking spot is already reserved for this time"}), 409
 
-        # הוספת ההזמנה אם החניה פנויה
         insert_query = """
             INSERT INTO reservations (parking_spot_id, username, reservation_date, start_time, end_time, status)
             VALUES (%s, %s, %s, %s, %s, 'Reserved')
@@ -255,7 +248,7 @@ def get_user_reservations():
     if not username:
         return jsonify({"success": False, "message": "Username is required"}), 400
 
-    cursor = None  # הוספת משתנה לפני שימוש בו
+    cursor = None  
 
     try:
         cursor = db.cursor()
@@ -294,7 +287,7 @@ def get_user_reservations():
         return jsonify({"success": False, "error": str(e)}), 500
 
     finally:
-        if cursor:  # בדיקה שה-cursor לא ריק לפני סגירתו
+        if cursor:  
             cursor.close()
 
 
@@ -360,16 +353,13 @@ def recommend_parking():
 
         user_building, is_electric_car, is_disabled_user = user_data
 
-        # מיפוי בין מבנים לרמות חניה
         building_to_level = {
-            "A": 1,  # מבנה A -> רמה 1
-            "B": 2   # מבנה B -> רמה 2
+            "A": 1, 
+            "B": 2   
         }
 
-        # רמת החניה המועדפת על פי המבנה
         preferred_level = building_to_level.get(user_building)
 
-        # שאילתה למשתמשים עם צרכים מיוחדים
         query = """
             SELECT ps.id, ps.spot_code, ps.level
             FROM parking_spots ps
@@ -420,9 +410,9 @@ def reserve_future_parking():
 
     username = data.get("username")
     selected_days = data.get("selectedDays")  # ['Monday', 'Wednesday']
-    start_time = data.get("startTime")  # לדוגמה: '13:00'
-    end_time = data.get("endTime")  # לדוגמה: '17:00'
-    reservation_duration = int(data.get("reservationDuration", 0))  # מספר שבועות
+    start_time = data.get("startTime")  
+    end_time = data.get("endTime")  
+    reservation_duration = int(data.get("reservationDuration", 0)) 
 
     if not username or not selected_days or not start_time or not end_time or reservation_duration <= 0:
         return jsonify({"success": False, "message": "All fields are required"}), 400
@@ -430,7 +420,6 @@ def reserve_future_parking():
     try:
         cursor = db.cursor()
 
-        # שליפת פרטי המשתמש
         cursor.execute("""
             SELECT is_electric_car, is_disabled_user 
             FROM users 
@@ -442,8 +431,6 @@ def reserve_future_parking():
             return jsonify({"success": False, "message": "User not found"}), 404
 
         is_electric_car, is_disabled_user = user_data
-
-        # יצירת רשימת תאריכים לכל הימים הנבחרים
         start_date = datetime.now().date()
         end_date = start_date + timedelta(weeks=reservation_duration)
         reservation_dates = []
@@ -453,12 +440,10 @@ def reserve_future_parking():
                 reservation_dates.append(start_date)
             start_date += timedelta(days=1)
 
-        # שמירת ההזמנות
         reservations = []
         unavailable_dates = []
 
         for date in reservation_dates:
-            # ניסיון למצוא חנייה מומלצת תחילה
             recommend_query = """
                 SELECT ps.id 
                 FROM parking_spots ps
@@ -485,11 +470,9 @@ def reserve_future_parking():
             if recommended_spot:
                 spot_id = recommended_spot[0]
             else:
-                # אין חנייה פנויה ליום הזה
                 unavailable_dates.append(str(date))
                 continue
 
-            # בדיקה אם החנייה פנויה בשעות האלו
             check_query = """
                 SELECT 1 FROM reservations
                 WHERE parking_spot_id = %s
@@ -501,7 +484,6 @@ def reserve_future_parking():
                 unavailable_dates.append(str(date))
                 continue
 
-            # שמירת החנייה
             insert_query = """
                 INSERT INTO reservations (parking_spot_id, username, reservation_date, start_time, end_time, status)
                 VALUES (%s, %s, %s, %s, %s, 'Reserved')
@@ -543,21 +525,21 @@ def signup():
     username = data.get('username')
     password = data.get('password')
     building = data.get('building')
-    is_electric_car = data.get('is_electric_car', False)  # ברירת מחדל False אם לא נשלח
-    is_disabled_user = data.get('is_disabled_user', False)  # ברירת מחדל False אם לא נשלח
+    is_electric_car = data.get('is_electric_car', False) 
+    is_disabled_user = data.get('is_disabled_user', False)  
 
     if not id or not username or not password or not building:
         return jsonify({"success": False, "message": "fill all"}), 400
 
     try:
         cursor = db.cursor()
-        # בדיקה אם המשתמש כבר קיים
+       
         check_query = "SELECT * FROM users WHERE username = %s OR id = %s"
         cursor.execute(check_query, (username, id))
         if cursor.fetchone():
             return jsonify({"success": False, "message": "user already exists"}), 409
 
-        # הוספת המשתמש החדש עם הערכים החדשים
+        
         insert_query = """
             INSERT INTO users (id, username, password, building, role, is_electric_car, is_disabled_user)
             VALUES (%s, %s, %s, %s, 'guest', %s, %s)
@@ -586,12 +568,12 @@ def get_users():
                 cursor.execute(query)
                 rows = cursor.fetchall()
 
-                # עיבוד הנתונים לפורמט JSON
+               
                 users = [
                     {
                         "id": row[0],
                         "username": row[1],
-                        "password": row[2],  # **שיקול אבטחה: מומלץ לא להחזיר את הסיסמאות!**
+                        "password": row[2],  
                         "role": row[3],
                         "building": row[4],
                         "disabled": row[5],

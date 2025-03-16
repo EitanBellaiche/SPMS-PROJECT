@@ -1,12 +1,10 @@
-/* General Styles */
 body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e3f2fd, #90caf9); /* Blue gradient */
+    background: linear-gradient(135deg, #e3f2fd, #90caf9); 
     color: #333;
 }
 
-/* Header */
 .reservation-header {
     display: flex;
     justify-content: space-between;
@@ -22,7 +20,7 @@ body {
     font-weight: bold;
 }
 .back-home-button {
-    background-color: #1565c0; /* Blue background */
+    background-color: #1565c0; 
     color: white;
     font-size: 1rem;
     padding: 10px 15px;
@@ -30,8 +28,8 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-/* Main Section */
+}
+
 .reservation-main {
     text-align: center;
     padding: 20px;
@@ -44,7 +42,6 @@ body {
     min-height: 100vh;
 }
 
-/* Form Section */
 .reservation-form {
     background: white;
     padding: 20px;
@@ -61,7 +58,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Day Selection */
 .day-selection {
     margin-bottom: 20px;
 }
@@ -96,7 +92,6 @@ body {
     color: white;
 }
 
-/* Time Selection */
 .time-selection {
     display: flex;
     flex-wrap: wrap;
@@ -128,7 +123,6 @@ select:focus {
     outline: none;
 }
 
-/* Duration Selection */
 .duration-selection {
     margin: 20px 0;
     text-align: left;
@@ -149,7 +143,6 @@ select:focus {
     width: 100px;
 }
 
-/* Reserve Button */
 .reserve-button {
     padding: 10px 20px;
     background-color: #43a047;
@@ -172,7 +165,6 @@ select:focus {
     cursor: not-allowed;
 }
 
-/* Footer */
 .footer {
     background-color: #1565c0;
     color: white;

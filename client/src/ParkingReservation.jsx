@@ -79,7 +79,7 @@ const ParkingReservation = () => {
     const options = [];
     for (let hour = 6; hour <= 24; hour++) {
       if (hour === 24) {
-        options.push("00:00"); // Add midnight
+        options.push("00:00");
         break;
       }
       const hourStr = hour.toString().padStart(2, "0");
@@ -156,12 +156,11 @@ const ParkingReservation = () => {
       const data = await response.json();
   
       if (data.success) {
-        // הצגת הודעה על ההצלחה
+        
         alert(data.message || "Parking spot reserved successfully!");
         
-        // ניווט לדף הבית אחרי הצלחה
         navigate("/home");
-        fetchAvailableSpots(); // Refresh spots after reservation
+        fetchAvailableSpots(); 
       } else {
         alert(data.message || "Failed to reserve spot.");
       }

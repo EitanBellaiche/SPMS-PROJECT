@@ -4,19 +4,17 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [username, setUsername] = useState("");
-  const [role, setRole] = useState(""); // שמירת התפקיד
+  const [role, setRole] = useState(""); 
   const navigate = useNavigate();
 
 
 
-  // שימוש במשתנה סביבתי לכתובת ה-API
   const API_URL =
     process.env.NODE_ENV === "development"
       ? process.env.REACT_APP_API_URL
       : process.env.REACT_APP_API_PRODUCTION_URL;
 
   useEffect(() => {
-    // שליפת הנתונים מ-LocalStorage
     const storedUsername = localStorage.getItem("username");
     const storedRole = localStorage.getItem("role");
 
@@ -25,12 +23,12 @@ const HomePage = () => {
     }
 
     if (storedRole) {
-      setRole(storedRole); // שמירת התפקיד ב-state
+      setRole(storedRole); 
     }
   }, [API_URL]);
 
   if (!username) {
-    return <div>Loading...</div>; // מסך טעינה
+    return <div>Loading...</div>; 
   }
 
   return (
