@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./AdminPage.css";
 import { Chart, registerables } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
+
 
 Chart.register(...registerables);
 
@@ -22,6 +24,8 @@ Chart.register(...registerables);
   const [parkingData, setParkingData] = useState(null);
   const [specialParkingData, setSpecialParkingData] = useState(null);
   const [employeesData, setEmployeesData] = useState(null);
+  const navigate = useNavigate();
+
 
 
 
@@ -226,6 +230,9 @@ Chart.register(...registerables);
       <header className="admin-header">
         <div className="logo">SPMS</div>
         <h1 className="header-title">Parking Management</h1>
+        <nav>
+          <button className="logout-button" onClick={() => navigate("/")} >Log Out</button>
+        </nav>
       </header>
 
       <div className="admin-wrapper">
@@ -251,7 +258,7 @@ Chart.register(...registerables);
                       <th>Building</th>
                       <th>Disabled</th>
                       <th>Electric Car</th>
-                      <th>Actions</th>
+                      <th>Actions</th>     
                     </tr>
                   </thead>
                   <tbody>
